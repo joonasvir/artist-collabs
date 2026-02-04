@@ -54,6 +54,7 @@
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            position: relative;
         }
 
         .artwork-image .placeholder {
@@ -76,6 +77,12 @@
             transform: translateY(0);
         }
 
+        .info-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .artist-name {
             font-size: 1rem;
             font-weight: 500;
@@ -90,6 +97,42 @@
         .artwork-title {
             font-size: 1rem;
             color: #999;
+        }
+
+        /* Tags */
+        .tag {
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            border-radius: 100px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .tag:hover {
+            opacity: 0.7;
+        }
+
+        .tag-draft {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .tag-ready {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .tag-licensed {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .tag-custom {
+            background: #f8d7da;
+            color: #721c24;
         }
 
         /* Filter state */
@@ -138,19 +181,54 @@
             opacity: 1;
         }
 
-        /* Artwork positions - scattered layout */
-        .artwork:nth-child(1) { left: 8%; top: 5vh; width: 320px; }
-        .artwork:nth-child(2) { right: 10%; top: 12vh; width: 380px; }
-        .artwork:nth-child(3) { left: 15%; top: 45vh; width: 340px; }
-        .artwork:nth-child(4) { right: 8%; top: 55vh; width: 300px; }
-        .artwork:nth-child(5) { left: 5%; top: 85vh; width: 360px; }
-        .artwork:nth-child(6) { right: 12%; top: 100vh; width: 320px; }
-        .artwork:nth-child(7) { left: 20%; top: 130vh; width: 380px; }
-        .artwork:nth-child(8) { right: 5%; top: 145vh; width: 340px; }
-        .artwork:nth-child(9) { left: 8%; top: 175vh; width: 300px; }
-        .artwork:nth-child(10) { right: 15%; top: 190vh; width: 360px; }
-        .artwork:nth-child(11) { left: 12%; top: 220vh; width: 340px; }
-        .artwork:nth-child(12) { right: 8%; top: 240vh; width: 320px; }
+        /* Tag filter bar at bottom */
+        .tag-bar {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            padding: 8px 12px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .tag-bar .tag {
+            opacity: 0.5;
+        }
+
+        .tag-bar .tag:hover,
+        .tag-bar .tag.active {
+            opacity: 1;
+        }
+
+        .tag-bar-label {
+            font-size: 0.7rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-right: 4px;
+        }
+
+        /* Artwork positions - scattered layout, larger tiles, can overlap center */
+        .artwork:nth-child(1) { left: 5%; top: 3vh; width: 420px; }
+        .artwork:nth-child(2) { left: 55%; top: 8vh; width: 480px; }
+        .artwork:nth-child(3) { left: 25%; top: 38vh; width: 450px; }
+        .artwork:nth-child(4) { left: 60%; top: 52vh; width: 400px; }
+        .artwork:nth-child(5) { left: 8%; top: 70vh; width: 460px; }
+        .artwork:nth-child(6) { left: 45%; top: 95vh; width: 420px; }
+        .artwork:nth-child(7) { left: 12%; top: 115vh; width: 480px; }
+        .artwork:nth-child(8) { left: 50%; top: 138vh; width: 440px; }
+        .artwork:nth-child(9) { left: 5%; top: 165vh; width: 400px; }
+        .artwork:nth-child(10) { left: 40%; top: 185vh; width: 460px; }
+        .artwork:nth-child(11) { left: 18%; top: 215vh; width: 440px; }
+        .artwork:nth-child(12) { left: 48%; top: 240vh; width: 420px; }
 
         .artwork-image {
             aspect-ratio: 1;
@@ -202,6 +280,11 @@
             .sticky-title {
                 font-size: 2.5rem;
             }
+
+            .tag-bar {
+                bottom: 16px;
+                padding: 6px 10px;
+            }
         }
     </style>
 </head>
@@ -211,156 +294,243 @@
         <span class="close">✕</span>
     </div>
 
+    <div class="tag-bar">
+        <span class="tag-bar-label">Filter:</span>
+        <span class="tag tag-draft" data-tag="draft">Draft</span>
+        <span class="tag tag-ready" data-tag="ready">Ready</span>
+        <span class="tag tag-licensed" data-tag="licensed">Licensed</span>
+        <span class="tag tag-custom" data-tag="custom">Custom</span>
+    </div>
+
     <h1 class="sticky-title">Collabs</h1>
 
     <div class="canvas">
-        <article class="artwork" data-artist="pol-sola">
+        <article class="artwork" data-artist="pol-sola" data-tag="ready">
             <div class="artwork-image">
                 <div class="placeholder gradient-1"></div>
             </div>
             <div class="artwork-info">
-                <span class="artist-name">Pol Sola</span>
+                <div class="info-left">
+                    <span class="artist-name">Pol Sola</span>
+                    <span class="tag tag-ready">Ready</span>
+                </div>
                 <span class="artwork-title">Artwork I</span>
             </div>
         </article>
 
-        <article class="artwork" data-artist="pol-sola">
+        <article class="artwork" data-artist="pol-sola" data-tag="licensed">
             <div class="artwork-image">
                 <div class="placeholder gradient-2"></div>
             </div>
             <div class="artwork-info">
-                <span class="artist-name">Pol Sola</span>
+                <div class="info-left">
+                    <span class="artist-name">Pol Sola</span>
+                    <span class="tag tag-licensed">Licensed</span>
+                </div>
                 <span class="artwork-title">Esfera</span>
             </div>
         </article>
 
-        <article class="artwork" data-artist="anoukia-perrey">
+        <article class="artwork" data-artist="anoukia-perrey" data-tag="draft">
             <div class="artwork-image">
                 <div class="placeholder gradient-3"></div>
             </div>
             <div class="artwork-info">
-                <span class="artist-name">Anoukia Perrey</span>
+                <div class="info-left">
+                    <span class="artist-name">Anoukia Perrey</span>
+                    <span class="tag tag-draft">Draft</span>
+                </div>
                 <span class="artwork-title">Artwork I</span>
             </div>
         </article>
 
-        <article class="artwork" data-artist="olivia-pedigo">
+        <article class="artwork" data-artist="olivia-pedigo" data-tag="custom">
             <div class="artwork-image">
                 <div class="placeholder gradient-4"></div>
             </div>
             <div class="artwork-info">
-                <span class="artist-name">Olivia Pedigo</span>
+                <div class="info-left">
+                    <span class="artist-name">Olivia Pedigo</span>
+                    <span class="tag tag-custom">Custom</span>
+                </div>
                 <span class="artwork-title">Artwork I</span>
             </div>
         </article>
 
-        <article class="artwork" data-artist="jason-ting">
+        <article class="artwork" data-artist="jason-ting" data-tag="ready">
             <div class="artwork-image">
                 <div class="placeholder gradient-5"></div>
             </div>
             <div class="artwork-info">
-                <span class="artist-name">Jason Ting</span>
+                <div class="info-left">
+                    <span class="artist-name">Jason Ting</span>
+                    <span class="tag tag-ready">Ready</span>
+                </div>
                 <span class="artwork-title">Artwork I</span>
             </div>
         </article>
 
-        <article class="artwork" data-artist="loremdeloop">
+        <article class="artwork" data-artist="loremdeloop" data-tag="licensed">
             <div class="artwork-image">
                 <div class="placeholder gradient-6"></div>
             </div>
             <div class="artwork-info">
-                <span class="artist-name">Loremdeloop</span>
+                <div class="info-left">
+                    <span class="artist-name">Loremdeloop</span>
+                    <span class="tag tag-licensed">Licensed</span>
+                </div>
                 <span class="artwork-title">Artwork I</span>
             </div>
         </article>
 
-        <article class="artwork" data-artist="mario-carrillo">
+        <article class="artwork" data-artist="mario-carrillo" data-tag="draft">
             <div class="artwork-image">
                 <div class="placeholder gradient-7"></div>
             </div>
             <div class="artwork-info">
-                <span class="artist-name">Mario Carrillo</span>
+                <div class="info-left">
+                    <span class="artist-name">Mario Carrillo</span>
+                    <span class="tag tag-draft">Draft</span>
+                </div>
                 <span class="artwork-title">Artwork I</span>
             </div>
         </article>
 
-        <article class="artwork" data-artist="rafaela-mascaro">
+        <article class="artwork" data-artist="rafaela-mascaro" data-tag="ready">
             <div class="artwork-image">
                 <div class="placeholder gradient-8"></div>
             </div>
             <div class="artwork-info">
-                <span class="artist-name">Rafaela Mascaro</span>
+                <div class="info-left">
+                    <span class="artist-name">Rafaela Mascaro</span>
+                    <span class="tag tag-ready">Ready</span>
+                </div>
                 <span class="artwork-title">Artwork I</span>
             </div>
         </article>
 
-        <article class="artwork" data-artist="jer-bosmans">
+        <article class="artwork" data-artist="jer-bosmans" data-tag="custom">
             <div class="artwork-image">
                 <div class="placeholder gradient-9"></div>
             </div>
             <div class="artwork-info">
-                <span class="artist-name">Jer Bosmans</span>
+                <div class="info-left">
+                    <span class="artist-name">Jer Bosmans</span>
+                    <span class="tag tag-custom">Custom</span>
+                </div>
                 <span class="artwork-title">Artwork I</span>
             </div>
         </article>
 
-        <article class="artwork" data-artist="anoukia-perrey">
+        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready">
             <div class="artwork-image">
                 <div class="placeholder gradient-10"></div>
             </div>
             <div class="artwork-info">
-                <span class="artist-name">Anoukia Perrey</span>
+                <div class="info-left">
+                    <span class="artist-name">Anoukia Perrey</span>
+                    <span class="tag tag-ready">Ready</span>
+                </div>
                 <span class="artwork-title">Artwork II</span>
             </div>
         </article>
 
-        <article class="artwork" data-artist="jason-ting">
+        <article class="artwork" data-artist="jason-ting" data-tag="licensed">
             <div class="artwork-image">
                 <div class="placeholder gradient-11"></div>
             </div>
             <div class="artwork-info">
-                <span class="artist-name">Jason Ting</span>
+                <div class="info-left">
+                    <span class="artist-name">Jason Ting</span>
+                    <span class="tag tag-licensed">Licensed</span>
+                </div>
                 <span class="artwork-title">Artwork II</span>
             </div>
         </article>
 
-        <article class="artwork" data-artist="loremdeloop">
+        <article class="artwork" data-artist="loremdeloop" data-tag="draft">
             <div class="artwork-image">
                 <div class="placeholder gradient-12"></div>
             </div>
             <div class="artwork-info">
-                <span class="artist-name">Loremdeloop</span>
+                <div class="info-left">
+                    <span class="artist-name">Loremdeloop</span>
+                    <span class="tag tag-draft">Draft</span>
+                </div>
                 <span class="artwork-title">Artwork II</span>
             </div>
         </article>
     </div>
 
     <script>
-        const artistNames = document.querySelectorAll('.artist-name');
+        const artistNames = document.querySelectorAll('.artwork .artist-name');
+        const artworkTags = document.querySelectorAll('.artwork .tag');
         const artworks = document.querySelectorAll('.artwork');
         const filterBar = document.querySelector('.filter-bar');
         const filterName = document.querySelector('.filter-name');
         const closeBtn = document.querySelector('.close');
+        const tagBarTags = document.querySelectorAll('.tag-bar .tag');
 
+        let currentFilter = { type: null, value: null };
+
+        // Click artist name to filter by artist
         artistNames.forEach(name => {
             name.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const artwork = name.closest('.artwork');
                 const artistId = artwork.dataset.artist;
                 const artistDisplayName = name.textContent;
+                applyFilter('artist', artistId, artistDisplayName);
+            });
+        });
 
-                filterByArtist(artistId, artistDisplayName);
+        // Click tag on artwork to filter by that tag
+        artworkTags.forEach(tag => {
+            tag.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const tagValue = tag.textContent.toLowerCase();
+                applyFilter('tag', tagValue, tag.textContent);
+            });
+        });
+
+        // Click tag in bottom bar to filter
+        tagBarTags.forEach(tag => {
+            tag.addEventListener('click', (e) => {
+                const tagValue = tag.dataset.tag;
+                const displayName = tag.textContent;
+
+                // Toggle off if same tag clicked
+                if (currentFilter.type === 'tag' && currentFilter.value === tagValue) {
+                    clearFilter();
+                } else {
+                    applyFilter('tag', tagValue, displayName);
+                }
             });
         });
 
         closeBtn.addEventListener('click', clearFilter);
 
-        function filterByArtist(artistId, displayName) {
+        function applyFilter(type, value, displayName) {
+            currentFilter = { type, value };
             document.body.classList.add('filtered');
             filterName.textContent = displayName;
 
+            // Update tag bar active state
+            tagBarTags.forEach(t => t.classList.remove('active'));
+            if (type === 'tag') {
+                const activeTag = document.querySelector(`.tag-bar .tag[data-tag="${value}"]`);
+                if (activeTag) activeTag.classList.add('active');
+            }
+
             artworks.forEach(artwork => {
-                if (artwork.dataset.artist === artistId) {
+                let matches = false;
+                if (type === 'artist') {
+                    matches = artwork.dataset.artist === value;
+                } else if (type === 'tag') {
+                    matches = artwork.dataset.tag === value;
+                }
+
+                if (matches) {
                     artwork.classList.add('active');
                 } else {
                     artwork.classList.remove('active');
@@ -369,7 +539,9 @@
         }
 
         function clearFilter() {
+            currentFilter = { type: null, value: null };
             document.body.classList.remove('filtered');
+            tagBarTags.forEach(t => t.classList.remove('active'));
             artworks.forEach(artwork => {
                 artwork.classList.remove('active');
             });
