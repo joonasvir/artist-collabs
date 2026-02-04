@@ -28,9 +28,14 @@
             font-size: clamp(3rem, 10vw, 8rem);
             font-weight: 400;
             letter-spacing: -0.02em;
-            z-index: 1;
+            z-index: -1;
             pointer-events: none;
             user-select: none;
+            transition: opacity 0.5s ease;
+        }
+
+        body.showcase-active .sticky-title {
+            opacity: 0.1;
         }
 
         .canvas {
@@ -42,7 +47,7 @@
         .artwork {
             position: absolute;
             cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.5s ease;
         }
 
         .artwork:hover {
@@ -115,38 +120,86 @@
             opacity: 0.7;
         }
 
-        .tag-draft {
-            background: #f0f0f0;
-            color: #666;
-        }
+        .tag-draft { background: #f0f0f0; color: #666; }
+        .tag-ready { background: #d4edda; color: #155724; }
+        .tag-licensed { background: #cce5ff; color: #004085; }
+        .tag-custom { background: #f8d7da; color: #721c24; }
 
-        .tag-ready {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .tag-licensed {
-            background: #cce5ff;
-            color: #004085;
-        }
-
-        .tag-custom {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        /* Filter state */
-        body.filtered .artwork {
-            opacity: 0.1;
+        /* Showcase mode - artist filter */
+        body.showcase-active .canvas .artwork {
+            opacity: 0.08;
             pointer-events: none;
-            transition: opacity 0.4s ease;
         }
 
-        body.filtered .artwork.active {
+        body.showcase-active .canvas .artwork.in-showcase {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Showcase overlay */
+        .showcase-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 50;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        body.showcase-active .showcase-overlay {
             opacity: 1;
             pointer-events: auto;
         }
 
+        .showcase-scroll {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            padding: 0 10vw;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            scroll-behavior: smooth;
+        }
+
+        .showcase-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .showcase-item {
+            flex-shrink: 0;
+            width: 400px;
+            opacity: 0;
+            transform: scale(0.8) translateY(40px);
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .showcase-item.visible {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        .showcase-item .artwork-image {
+            aspect-ratio: 1;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .showcase-item .artwork-info {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Filter bars */
         .filter-bar {
             position: fixed;
             top: 24px;
@@ -166,7 +219,8 @@
             transition: opacity 0.3s ease;
         }
 
-        body.filtered .filter-bar {
+        body.filtered .filter-bar,
+        body.showcase-active .filter-bar {
             opacity: 1;
             pointer-events: auto;
         }
@@ -181,7 +235,6 @@
             opacity: 1;
         }
 
-        /* Tag filter bar at bottom */
         .tag-bar {
             position: fixed;
             bottom: 24px;
@@ -197,16 +250,17 @@
             align-items: center;
             gap: 8px;
             box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            transition: opacity 0.3s ease;
         }
 
-        .tag-bar .tag {
-            opacity: 0.5;
+        body.showcase-active .tag-bar {
+            opacity: 0;
+            pointer-events: none;
         }
 
+        .tag-bar .tag { opacity: 0.5; }
         .tag-bar .tag:hover,
-        .tag-bar .tag.active {
-            opacity: 1;
-        }
+        .tag-bar .tag.active { opacity: 1; }
 
         .tag-bar-label {
             font-size: 0.7rem;
@@ -216,7 +270,7 @@
             margin-right: 4px;
         }
 
-        /* Artwork positions - scattered layout, larger tiles, can overlap center */
+        /* Artwork positions */
         .artwork:nth-child(1) { left: 5%; top: 3vh; width: 420px; }
         .artwork:nth-child(2) { left: 55%; top: 8vh; width: 480px; }
         .artwork:nth-child(3) { left: 25%; top: 38vh; width: 450px; }
@@ -230,9 +284,7 @@
         .artwork:nth-child(11) { left: 18%; top: 215vh; width: 440px; }
         .artwork:nth-child(12) { left: 48%; top: 240vh; width: 420px; }
 
-        .artwork-image {
-            aspect-ratio: 1;
-        }
+        .artwork-image { aspect-ratio: 1; }
 
         /* Gradients */
         .gradient-1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
@@ -249,9 +301,7 @@
         .gradient-12 { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
 
         @media (max-width: 900px) {
-            .canvas {
-                min-height: 400vh;
-            }
+            .canvas { min-height: 400vh; }
 
             .artwork {
                 width: 65vw !important;
@@ -277,14 +327,11 @@
             .artwork:nth-child(11) { top: 305vh; }
             .artwork:nth-child(12) { top: 335vh; }
 
-            .sticky-title {
-                font-size: 2.5rem;
-            }
+            .sticky-title { font-size: 2.5rem; }
+            .tag-bar { bottom: 16px; padding: 6px 10px; }
 
-            .tag-bar {
-                bottom: 16px;
-                padding: 6px 10px;
-            }
+            .showcase-item { width: 300px; }
+            .showcase-scroll { gap: 24px; padding: 0 5vw; }
         }
     </style>
 </head>
@@ -303,6 +350,10 @@
     </div>
 
     <h1 class="sticky-title">Collabs</h1>
+
+    <div class="showcase-overlay">
+        <div class="showcase-scroll"></div>
+    </div>
 
     <div class="canvas">
         <article class="artwork" data-artist="pol-sola" data-tag="ready">
@@ -463,74 +514,120 @@
     </div>
 
     <script>
-        const artistNames = document.querySelectorAll('.artwork .artist-name');
-        const artworkTags = document.querySelectorAll('.artwork .tag');
-        const artworks = document.querySelectorAll('.artwork');
+        const artworks = document.querySelectorAll('.canvas .artwork');
         const filterBar = document.querySelector('.filter-bar');
         const filterName = document.querySelector('.filter-name');
         const closeBtn = document.querySelector('.close');
         const tagBarTags = document.querySelectorAll('.tag-bar .tag');
+        const showcaseOverlay = document.querySelector('.showcase-overlay');
+        const showcaseScroll = document.querySelector('.showcase-scroll');
 
         let currentFilter = { type: null, value: null };
+        let isShowcaseActive = false;
 
-        // Click artist name to filter by artist
-        artistNames.forEach(name => {
-            name.addEventListener('click', (e) => {
+        // Click artist name to open showcase
+        document.addEventListener('click', (e) => {
+            const artistName = e.target.closest('.artist-name');
+            if (artistName && artistName.closest('.canvas')) {
                 e.stopPropagation();
-                const artwork = name.closest('.artwork');
+                const artwork = artistName.closest('.artwork');
                 const artistId = artwork.dataset.artist;
-                const artistDisplayName = name.textContent;
-                applyFilter('artist', artistId, artistDisplayName);
-            });
+                const artistDisplayName = artistName.textContent;
+                openShowcase(artistId, artistDisplayName);
+            }
         });
 
         // Click tag on artwork to filter by that tag
-        artworkTags.forEach(tag => {
-            tag.addEventListener('click', (e) => {
+        document.addEventListener('click', (e) => {
+            const tag = e.target.closest('.artwork .tag');
+            if (tag && tag.closest('.canvas')) {
                 e.stopPropagation();
                 const tagValue = tag.textContent.toLowerCase();
-                applyFilter('tag', tagValue, tag.textContent);
-            });
+                applyTagFilter(tagValue, tag.textContent);
+            }
         });
 
         // Click tag in bottom bar to filter
         tagBarTags.forEach(tag => {
-            tag.addEventListener('click', (e) => {
+            tag.addEventListener('click', () => {
                 const tagValue = tag.dataset.tag;
                 const displayName = tag.textContent;
 
-                // Toggle off if same tag clicked
                 if (currentFilter.type === 'tag' && currentFilter.value === tagValue) {
                     clearFilter();
                 } else {
-                    applyFilter('tag', tagValue, displayName);
+                    applyTagFilter(tagValue, displayName);
                 }
             });
         });
 
         closeBtn.addEventListener('click', clearFilter);
 
-        function applyFilter(type, value, displayName) {
-            currentFilter = { type, value };
+        // Click outside showcase to close
+        showcaseOverlay.addEventListener('click', (e) => {
+            if (e.target === showcaseOverlay) {
+                clearFilter();
+            }
+        });
+
+        function openShowcase(artistId, displayName) {
+            isShowcaseActive = true;
+            currentFilter = { type: 'artist', value: artistId };
+            document.body.classList.add('showcase-active');
+            document.body.classList.remove('filtered');
+            filterName.textContent = displayName;
+
+            // Clear previous showcase
+            showcaseScroll.innerHTML = '';
+
+            // Find matching artworks and mark them
+            const matchingArtworks = [];
+            artworks.forEach(artwork => {
+                if (artwork.dataset.artist === artistId) {
+                    artwork.classList.add('in-showcase');
+                    matchingArtworks.push(artwork);
+                } else {
+                    artwork.classList.remove('in-showcase');
+                }
+            });
+
+            // Create showcase items with staggered animation
+            matchingArtworks.forEach((artwork, index) => {
+                const clone = artwork.cloneNode(true);
+                clone.classList.remove('artwork', 'in-showcase');
+                clone.classList.add('showcase-item');
+                clone.style.cssText = '';
+
+                // Remove positional styles
+                clone.removeAttribute('style');
+
+                showcaseScroll.appendChild(clone);
+
+                // Stagger the reveal animation
+                setTimeout(() => {
+                    clone.classList.add('visible');
+                }, 100 + (index * 80));
+            });
+
+            // Scroll to start
+            showcaseScroll.scrollLeft = 0;
+        }
+
+        function applyTagFilter(tagValue, displayName) {
+            if (isShowcaseActive) {
+                clearShowcase();
+            }
+
+            currentFilter = { type: 'tag', value: tagValue };
             document.body.classList.add('filtered');
             filterName.textContent = displayName;
 
-            // Update tag bar active state
             tagBarTags.forEach(t => t.classList.remove('active'));
-            if (type === 'tag') {
-                const activeTag = document.querySelector(`.tag-bar .tag[data-tag="${value}"]`);
-                if (activeTag) activeTag.classList.add('active');
-            }
+            const activeTag = document.querySelector(`.tag-bar .tag[data-tag="${tagValue}"]`);
+            if (activeTag) activeTag.classList.add('active');
 
             artworks.forEach(artwork => {
-                let matches = false;
-                if (type === 'artist') {
-                    matches = artwork.dataset.artist === value;
-                } else if (type === 'tag') {
-                    matches = artwork.dataset.tag === value;
-                }
-
-                if (matches) {
+                if (artwork.dataset.tag === tagValue) {
                     artwork.classList.add('active');
                 } else {
                     artwork.classList.remove('active');
@@ -538,7 +635,27 @@
             });
         }
 
+        function clearShowcase() {
+            isShowcaseActive = false;
+            document.body.classList.remove('showcase-active');
+            artworks.forEach(artwork => {
+                artwork.classList.remove('in-showcase');
+            });
+
+            // Fade out showcase items
+            const items = showcaseScroll.querySelectorAll('.showcase-item');
+            items.forEach(item => item.classList.remove('visible'));
+
+            setTimeout(() => {
+                showcaseScroll.innerHTML = '';
+            }, 400);
+        }
+
         function clearFilter() {
+            if (isShowcaseActive) {
+                clearShowcase();
+            }
+
             currentFilter = { type: null, value: null };
             document.body.classList.remove('filtered');
             tagBarTags.forEach(t => t.classList.remove('active'));
@@ -551,6 +668,14 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') clearFilter();
         });
+
+        // Horizontal scroll with mouse wheel in showcase
+        showcaseScroll.addEventListener('wheel', (e) => {
+            if (isShowcaseActive) {
+                e.preventDefault();
+                showcaseScroll.scrollLeft += e.deltaY;
+            }
+        }, { passive: false });
     </script>
 </body>
 </html>
