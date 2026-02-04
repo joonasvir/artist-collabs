@@ -31,18 +31,20 @@
             z-index: -1;
             pointer-events: none;
             user-select: none;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.5s ease, filter 0.4s ease;
         }
 
         body.showcase-active .sticky-title,
         body.detail-active .sticky-title {
             opacity: 0.1;
+            filter: blur(10px);
         }
 
         .canvas {
             position: relative;
             min-height: 1200vh;
             padding: 10vh 0 20vh;
+            transition: filter 0.4s ease;
         }
 
         .artwork {
@@ -127,9 +129,15 @@
         .tag-custom { background: #f8d7da; color: #721c24; }
 
         /* Showcase mode */
+        body.showcase-active .canvas,
+        body.detail-active .canvas {
+            filter: blur(20px);
+            transition: filter 0.4s ease;
+        }
+
         body.showcase-active .canvas .artwork,
         body.detail-active .canvas .artwork {
-            opacity: 0.08;
+            opacity: 0.15;
             pointer-events: none;
         }
 
