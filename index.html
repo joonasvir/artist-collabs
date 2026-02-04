@@ -26,7 +26,7 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 50;
-            width: 80px;
+            width: 56px;
             height: auto;
             opacity: 0.8;
             transition: opacity 0.3s ease;
@@ -239,9 +239,9 @@
             opacity: 0;
             transition: opacity 0.3s ease;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
-            padding: 5vh 5vw;
+            padding: 8vh 5vw 12vh;
         }
 
         body.detail-active .detail-overlay {
@@ -338,10 +338,16 @@
         }
 
         body.filtered .filter-bar,
-        body.showcase-active .filter-bar,
+        body.showcase-active .filter-bar {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
         body.detail-active .filter-bar {
             opacity: 1;
             pointer-events: auto;
+            top: auto;
+            bottom: 28px;
         }
 
         .filter-bar .close {
@@ -1117,14 +1123,22 @@
             document.body.classList.add('detail-active');
             document.body.classList.remove('filtered', 'showcase-active');
 
-            // Calculate destination (center of screen)
+            // Calculate destination (higher up on screen)
             const viewportWidth = window.innerWidth;
             const viewportHeight = window.innerHeight;
             const maxWidth = Math.min(viewportWidth * 0.75, 800);
+            const maxHeight = viewportHeight * 0.7;
             const aspectRatio = sourceRect.width / sourceRect.height;
-            const destWidth = maxWidth;
-            const destHeight = destWidth / aspectRatio;
-            const destTop = (viewportHeight - destHeight) / 2;
+            let destWidth = maxWidth;
+            let destHeight = destWidth / aspectRatio;
+
+            // Constrain by height if needed
+            if (destHeight > maxHeight) {
+                destHeight = maxHeight;
+                destWidth = destHeight * aspectRatio;
+            }
+
+            const destTop = viewportHeight * 0.08; // 8vh from top
             const destLeft = (viewportWidth - destWidth) / 2;
 
             // Animate to destination
