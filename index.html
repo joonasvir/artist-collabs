@@ -63,7 +63,7 @@
 
         .canvas {
             position: relative;
-            min-height: 1050vh;
+            min-height: 1280vh;
             padding: 10vh 0 20vh;
             transition: filter 0.4s ease;
         }
@@ -82,7 +82,7 @@
         .artwork-image {
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 12px 50px rgba(0, 0, 0, 0.15);
             position: relative;
             background: #f0f0f0;
         }
@@ -266,8 +266,14 @@
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
-            will-change: transform, width, height, top, left;
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform;
+            transition: top 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                        left 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                        width 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                        height 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                        border-radius 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                        box-shadow 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                        opacity 0.2s ease;
         }
 
         .flying-artwork video,
@@ -387,11 +393,6 @@
             box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
         }
 
-        .filter-button svg {
-            width: 18px;
-            height: 18px;
-        }
-
         body.showcase-active .filter-button,
         body.detail-active .filter-button {
             opacity: 0;
@@ -503,35 +504,35 @@
             background: rgba(0, 0, 0, 0.1);
         }
 
-        /* Artwork positions - natural proportions, spread evenly */
-        .artwork { width: 520px; }
+        /* Artwork positions - natural proportions, no overlap, alternating sides */
+        .artwork { width: 480px; }
 
-        .artwork:nth-child(1) { left: 6%; top: 5vh; width: 500px; }
-        .artwork:nth-child(2) { right: 6%; left: auto; top: 10vh; width: 520px; }
-        .artwork:nth-child(3) { left: 30%; top: 55vh; width: 480px; }
-        .artwork:nth-child(4) { right: 10%; left: auto; top: 82vh; width: 540px; }
-        .artwork:nth-child(5) { left: 4%; top: 115vh; width: 520px; }
-        .artwork:nth-child(6) { right: 4%; left: auto; top: 155vh; width: 500px; }
-        .artwork:nth-child(7) { left: 25%; top: 195vh; width: 540px; }
-        .artwork:nth-child(8) { left: 6%; top: 245vh; width: 480px; }
-        .artwork:nth-child(9) { right: 8%; left: auto; top: 285vh; width: 520px; }
-        .artwork:nth-child(10) { left: 20%; top: 335vh; width: 500px; }
-        .artwork:nth-child(11) { right: 6%; left: auto; top: 380vh; width: 540px; }
-        .artwork:nth-child(12) { left: 4%; top: 430vh; width: 520px; }
-        .artwork:nth-child(13) { right: 12%; left: auto; top: 478vh; width: 480px; }
-        .artwork:nth-child(14) { left: 18%; top: 528vh; width: 540px; }
-        .artwork:nth-child(15) { right: 4%; left: auto; top: 575vh; width: 500px; }
-        .artwork:nth-child(16) { left: 8%; top: 625vh; width: 520px; }
-        .artwork:nth-child(17) { right: 10%; left: auto; top: 672vh; width: 540px; }
-        .artwork:nth-child(18) { left: 25%; top: 722vh; width: 480px; }
-        .artwork:nth-child(19) { left: 4%; top: 772vh; width: 520px; }
-        .artwork:nth-child(20) { right: 6%; left: auto; top: 820vh; width: 500px; }
-        .artwork:nth-child(21) { left: 18%; top: 868vh; width: 540px; }
-        .artwork:nth-child(22) { right: 8%; left: auto; top: 918vh; width: 520px; }
-        .artwork:nth-child(23) { left: 6%; top: 968vh; width: 480px; }
+        .artwork:nth-child(1) { left: 8%; top: 5vh; width: 460px; }
+        .artwork:nth-child(2) { right: 8%; left: auto; top: 55vh; width: 480px; }
+        .artwork:nth-child(3) { left: 10%; top: 105vh; width: 440px; }
+        .artwork:nth-child(4) { right: 10%; left: auto; top: 155vh; width: 500px; }
+        .artwork:nth-child(5) { left: 6%; top: 210vh; width: 480px; }
+        .artwork:nth-child(6) { right: 6%; left: auto; top: 265vh; width: 460px; }
+        .artwork:nth-child(7) { left: 12%; top: 320vh; width: 500px; }
+        .artwork:nth-child(8) { right: 8%; left: auto; top: 375vh; width: 440px; }
+        .artwork:nth-child(9) { left: 8%; top: 425vh; width: 480px; }
+        .artwork:nth-child(10) { right: 10%; left: auto; top: 480vh; width: 460px; }
+        .artwork:nth-child(11) { left: 6%; top: 535vh; width: 500px; }
+        .artwork:nth-child(12) { right: 6%; left: auto; top: 590vh; width: 480px; }
+        .artwork:nth-child(13) { left: 10%; top: 645vh; width: 440px; }
+        .artwork:nth-child(14) { right: 8%; left: auto; top: 695vh; width: 500px; }
+        .artwork:nth-child(15) { left: 8%; top: 750vh; width: 460px; }
+        .artwork:nth-child(16) { right: 10%; left: auto; top: 805vh; width: 480px; }
+        .artwork:nth-child(17) { left: 6%; top: 860vh; width: 500px; }
+        .artwork:nth-child(18) { right: 6%; left: auto; top: 915vh; width: 440px; }
+        .artwork:nth-child(19) { left: 12%; top: 965vh; width: 480px; }
+        .artwork:nth-child(20) { right: 8%; left: auto; top: 1020vh; width: 460px; }
+        .artwork:nth-child(21) { left: 8%; top: 1075vh; width: 500px; }
+        .artwork:nth-child(22) { right: 10%; left: auto; top: 1130vh; width: 480px; }
+        .artwork:nth-child(23) { left: 6%; top: 1185vh; width: 440px; }
 
         @media (max-width: 900px) {
-            .canvas { min-height: 1400vh; }
+            .canvas { min-height: 1600vh; }
 
             .artwork {
                 width: 85vw !important;
@@ -545,28 +546,28 @@
             }
 
             .artwork:nth-child(1) { top: 5vh; }
-            .artwork:nth-child(2) { top: 58vh; }
-            .artwork:nth-child(3) { top: 111vh; }
-            .artwork:nth-child(4) { top: 164vh; }
-            .artwork:nth-child(5) { top: 217vh; }
-            .artwork:nth-child(6) { top: 270vh; }
-            .artwork:nth-child(7) { top: 323vh; }
-            .artwork:nth-child(8) { top: 376vh; }
-            .artwork:nth-child(9) { top: 429vh; }
-            .artwork:nth-child(10) { top: 482vh; }
-            .artwork:nth-child(11) { top: 535vh; }
-            .artwork:nth-child(12) { top: 588vh; }
-            .artwork:nth-child(13) { top: 641vh; }
-            .artwork:nth-child(14) { top: 694vh; }
-            .artwork:nth-child(15) { top: 747vh; }
-            .artwork:nth-child(16) { top: 800vh; }
-            .artwork:nth-child(17) { top: 853vh; }
-            .artwork:nth-child(18) { top: 906vh; }
-            .artwork:nth-child(19) { top: 959vh; }
-            .artwork:nth-child(20) { top: 1012vh; }
-            .artwork:nth-child(21) { top: 1065vh; }
-            .artwork:nth-child(22) { top: 1118vh; }
-            .artwork:nth-child(23) { top: 1171vh; }
+            .artwork:nth-child(2) { top: 68vh; }
+            .artwork:nth-child(3) { top: 131vh; }
+            .artwork:nth-child(4) { top: 194vh; }
+            .artwork:nth-child(5) { top: 257vh; }
+            .artwork:nth-child(6) { top: 320vh; }
+            .artwork:nth-child(7) { top: 383vh; }
+            .artwork:nth-child(8) { top: 446vh; }
+            .artwork:nth-child(9) { top: 509vh; }
+            .artwork:nth-child(10) { top: 572vh; }
+            .artwork:nth-child(11) { top: 635vh; }
+            .artwork:nth-child(12) { top: 698vh; }
+            .artwork:nth-child(13) { top: 761vh; }
+            .artwork:nth-child(14) { top: 824vh; }
+            .artwork:nth-child(15) { top: 887vh; }
+            .artwork:nth-child(16) { top: 950vh; }
+            .artwork:nth-child(17) { top: 1013vh; }
+            .artwork:nth-child(18) { top: 1076vh; }
+            .artwork:nth-child(19) { top: 1139vh; }
+            .artwork:nth-child(20) { top: 1202vh; }
+            .artwork:nth-child(21) { top: 1265vh; }
+            .artwork:nth-child(22) { top: 1328vh; }
+            .artwork:nth-child(23) { top: 1391vh; }
 
             .sticky-title { font-size: 2.5rem; }
             .filter-button { bottom: 16px; padding: 14px 24px; font-size: 0.9rem; }
@@ -597,12 +598,7 @@
         <span class="close">✕</span>
     </div>
 
-    <button class="filter-button">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-        </svg>
-        Filter
-    </button>
+    <button class="filter-button">Filter</button>
 
     <div class="filter-menu">
         <button class="filter-menu-close">✕</button>
@@ -1175,20 +1171,32 @@
                 }
                 if (infoWrapper) detailContent.appendChild(infoWrapper);
 
+                // Pre-position detail content to match flying element exactly
+                detailContent.style.opacity = '0';
                 detailContent.classList.add('visible');
-                if (video) video.play();
 
-                // Hide flying element
-                if (flyingElement) {
-                    flyingElement.style.opacity = '0';
-                    setTimeout(() => {
-                        if (flyingElement && flyingElement.parentNode) {
-                            flyingElement.parentNode.removeChild(flyingElement);
+                // Small delay to let detail render, then crossfade
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        detailContent.style.opacity = '1';
+                        detailContent.style.transition = 'opacity 0.15s ease';
+
+                        if (video) video.play();
+
+                        // Hide flying element simultaneously
+                        if (flyingElement) {
+                            flyingElement.style.opacity = '0';
+                            setTimeout(() => {
+                                if (flyingElement && flyingElement.parentNode) {
+                                    flyingElement.parentNode.removeChild(flyingElement);
+                                }
+                                flyingElement = null;
+                                detailContent.style.transition = '';
+                            }, 150);
                         }
-                        flyingElement = null;
-                    }, 100);
-                }
-            }, 600);
+                    });
+                });
+            }, 700);
         }
 
         function openShowcase(artistId, displayName) {
@@ -1291,17 +1299,21 @@
                     flyingElement.appendChild(mediaClone);
                     document.body.appendChild(flyingElement);
 
-                    // Hide detail content
-                    detailContent.classList.remove('visible');
+                    // Cross-fade: hide detail content while showing flying element
+                    detailContent.style.opacity = '0';
+                    detailContent.style.transition = 'opacity 0.15s ease';
 
-                    // Animate back to source
-                    requestAnimationFrame(() => {
+                    // Animate back to source after brief delay
+                    setTimeout(() => {
+                        detailContent.classList.remove('visible');
+                        detailContent.style.transition = '';
+
                         flyingElement.classList.remove('at-destination');
                         flyingElement.style.top = sourceRect.top + 'px';
                         flyingElement.style.left = sourceRect.left + 'px';
                         flyingElement.style.width = sourceRect.width + 'px';
                         flyingElement.style.height = sourceRect.height + 'px';
-                    });
+                    }, 50);
 
                     // Cleanup after animation
                     setTimeout(() => {
@@ -1312,7 +1324,7 @@
                         currentDetailArtwork.classList.remove('in-detail');
                         currentDetailArtwork = null;
                         detailContent.innerHTML = '';
-                    }, 600);
+                    }, 750);
                 }
             } else {
                 detailContent.classList.remove('visible');
