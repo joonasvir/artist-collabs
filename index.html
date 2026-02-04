@@ -63,7 +63,7 @@
 
         .canvas {
             position: relative;
-            min-height: 1280vh;
+            min-height: 1400vh;
             padding: 10vh 0 20vh;
             transition: filter 0.4s ease;
         }
@@ -178,6 +178,8 @@
             pointer-events: none;
             opacity: 0;
             transition: opacity 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
 
         body.showcase-active .showcase-overlay {
@@ -185,12 +187,55 @@
             pointer-events: auto;
         }
 
+        /* Artist header in showcase */
+        .artist-header {
+            text-align: center;
+            padding: 60px 20px 30px;
+            flex-shrink: 0;
+        }
+
+        .artist-header h2 {
+            font-size: 3.5rem;
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            margin: 0 0 12px;
+        }
+
+        .artist-header .artist-description {
+            font-size: 1.1rem;
+            color: #666;
+            margin: 0 0 20px;
+        }
+
+        .artist-socials {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .artist-socials a {
+            color: #555;
+            font-size: 1.2rem;
+            transition: color 0.2s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+        }
+
+        .artist-socials a:hover {
+            color: #000;
+            transform: scale(1.1);
+        }
+
+        /* Close button for showcase - hidden, using filter bar instead */
+        .showcase-close {
+            display: none;
+        }
+
         .showcase-scroll {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: 100%;
-            transform: translateY(-50%);
+            flex: 1;
             display: flex;
             align-items: center;
             gap: 48px;
@@ -211,11 +256,18 @@
             transform: scale(0.8) translateY(40px);
             transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
                         transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
         }
 
         .showcase-item.visible {
             opacity: 1;
             transform: scale(1) translateY(0);
+        }
+
+        /* Blur showcase when detail is open on top */
+        body.showcase-active.detail-active .showcase-overlay {
+            filter: blur(8px);
+            opacity: 0.4;
         }
 
         .showcase-item .artwork-image {
@@ -258,36 +310,6 @@
             opacity: 1;
         }
 
-        /* Flying element for shared element transition */
-        .flying-artwork {
-            position: fixed;
-            z-index: 70;
-            pointer-events: none;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
-            will-change: transform;
-            transition: top 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-                        left 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-                        width 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-                        height 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-                        border-radius 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-                        box-shadow 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-                        opacity 0.2s ease;
-        }
-
-        .flying-artwork video,
-        .flying-artwork img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .flying-artwork.at-destination {
-            border-radius: 24px;
-            box-shadow: 0 12px 60px rgba(0, 0, 0, 0.25);
-        }
-
         .detail-content .artwork-image {
             border-radius: 24px;
             box-shadow: 0 12px 60px rgba(0, 0, 0, 0.2);
@@ -326,7 +348,7 @@
         /* Filter bars */
         .filter-bar {
             position: fixed;
-            top: 24px;
+            bottom: 90px;
             left: 50%;
             transform: translateX(-50%);
             background: #000;
@@ -334,26 +356,20 @@
             padding: 12px 24px;
             border-radius: 100px;
             font-size: 0.875rem;
-            z-index: 100;
+            z-index: 101;
             display: flex;
             align-items: center;
             gap: 16px;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
 
         body.filtered .filter-bar,
-        body.showcase-active .filter-bar {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
+        body.showcase-active .filter-bar,
         body.detail-active .filter-bar {
             opacity: 1;
             pointer-events: auto;
-            top: auto;
-            bottom: 28px;
         }
 
         .filter-bar .close {
@@ -364,79 +380,73 @@
 
         .filter-bar .close:hover { opacity: 1; }
 
-        /* Filter button and menu */
-        .filter-button {
+        /* Filter buttons row */
+        .filter-buttons {
             position: fixed;
             bottom: 28px;
             left: 50%;
             transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .filter-btn {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.6);
-            padding: 18px 36px;
+            padding: 16px 28px;
             border-radius: 100px;
             font-size: 1rem;
             font-weight: 500;
-            z-index: 100;
             cursor: pointer;
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .filter-button:hover {
+        .filter-btn:hover {
             background: rgba(255, 255, 255, 0.95);
-            transform: translateX(-50%) scale(1.05);
+            transform: scale(1.05);
             box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
         }
 
-        body.showcase-active .filter-button,
-        body.detail-active .filter-button {
-            opacity: 0;
-            pointer-events: none;
-            transform: translateX(-50%) scale(0.9);
+        .filter-btn.active {
+            background: rgba(30, 30, 30, 0.9);
+            color: white;
         }
 
-        body.filter-menu-open .filter-button {
-            transform: translateX(-50%) scale(0.95);
-            opacity: 0;
-            pointer-events: none;
-        }
+        /* Keep filter buttons visible in showcase/detail views */
 
+        /* Filter menus */
         .filter-menu {
             position: fixed;
-            bottom: 28px;
-            left: 50%;
-            transform: translateX(-50%);
+            bottom: 90px;
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
             border: 1px solid rgba(255, 255, 255, 0.5);
-            padding: 42px 54px;
-            border-radius: 36px;
+            padding: 28px 36px;
+            border-radius: 24px;
             z-index: 100;
             box-shadow: 0 16px 60px rgba(0, 0, 0, 0.12);
             opacity: 0;
             pointer-events: none;
-            transform: translateX(-50%) translateY(20px) scale(0.8);
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            display: flex;
-            gap: 60px;
+            transform: translateY(20px) scale(0.9);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        body.filter-menu-open .filter-menu {
+        .filter-menu.open {
             opacity: 1;
             pointer-events: auto;
-            transform: translateX(-50%) translateY(0) scale(1);
+            transform: translateY(0) scale(1);
         }
 
         body.showcase-active .filter-menu,
         body.detail-active .filter-menu {
-            opacity: 0;
-            pointer-events: none;
+            opacity: 0 !important;
+            pointer-events: none !important;
         }
 
         .filter-section {
@@ -457,16 +467,15 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
+            align-items: center;
         }
 
         .filter-option {
             font-size: 1.3rem;
-            padding: 8px 0;
+            padding: 8px 16px;
             cursor: pointer;
             transition: opacity 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            text-align: center;
         }
 
         .filter-option:hover {
@@ -482,54 +491,45 @@
             padding: 5px 10px;
         }
 
-        .filter-menu-close {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.05);
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: #666;
-            transition: background 0.2s;
+        /* Artwork positions - varied layout with center placements after initial view */
+        .artwork { width: 625px; }
+
+        /* First 2 stay on sides to avoid overlapping centered "Collabs" text */
+        .artwork:nth-child(1) { left: 8%; top: 5vh; width: 600px; }
+        .artwork:nth-child(2) { right: 8%; left: auto; top: 60vh; width: 625px; }
+        /* After scrolling past hero, can use center positions too */
+        .artwork:nth-child(3) { left: 50%; transform: translateX(-50%); top: 120vh; width: 650px; }
+        .artwork:nth-child(4) { left: 6%; top: 180vh; width: 600px; }
+        .artwork:nth-child(5) { right: 10%; left: auto; top: 240vh; width: 625px; }
+        .artwork:nth-child(6) { left: 50%; transform: translateX(-50%); top: 300vh; width: 570px; }
+        .artwork:nth-child(7) { right: 6%; left: auto; top: 360vh; width: 650px; }
+        .artwork:nth-child(8) { left: 12%; top: 420vh; width: 625px; }
+        .artwork:nth-child(9) { left: 50%; transform: translateX(-50%); top: 480vh; width: 600px; }
+        .artwork:nth-child(10) { left: 8%; top: 540vh; width: 650px; }
+        .artwork:nth-child(11) { right: 8%; left: auto; top: 600vh; width: 570px; }
+        .artwork:nth-child(12) { left: 50%; transform: translateX(-50%); top: 660vh; width: 625px; }
+        .artwork:nth-child(13) { right: 10%; left: auto; top: 720vh; width: 600px; }
+        .artwork:nth-child(14) { left: 6%; top: 780vh; width: 650px; }
+        .artwork:nth-child(15) { left: 50%; transform: translateX(-50%); top: 840vh; width: 570px; }
+        .artwork:nth-child(16) { right: 6%; left: auto; top: 900vh; width: 625px; }
+        .artwork:nth-child(17) { left: 10%; top: 960vh; width: 600px; }
+        .artwork:nth-child(18) { left: 50%; transform: translateX(-50%); top: 1020vh; width: 650px; }
+        .artwork:nth-child(19) { right: 8%; left: auto; top: 1080vh; width: 570px; }
+        .artwork:nth-child(20) { left: 8%; top: 1140vh; width: 625px; }
+        .artwork:nth-child(21) { left: 50%; transform: translateX(-50%); top: 1200vh; width: 600px; }
+        .artwork:nth-child(22) { right: 10%; left: auto; top: 1260vh; width: 650px; }
+        .artwork:nth-child(23) { left: 6%; top: 1320vh; width: 570px; }
+
+        /* Hover states for centered artworks to preserve translateX */
+        .artwork:nth-child(3):hover,
+        .artwork:nth-child(6):hover,
+        .artwork:nth-child(9):hover,
+        .artwork:nth-child(12):hover,
+        .artwork:nth-child(15):hover,
+        .artwork:nth-child(18):hover,
+        .artwork:nth-child(21):hover {
+            transform: translateX(-50%) scale(1.02);
         }
-
-        .filter-menu-close:hover {
-            background: rgba(0, 0, 0, 0.1);
-        }
-
-        /* Artwork positions - natural proportions, no overlap, alternating sides */
-        .artwork { width: 480px; }
-
-        .artwork:nth-child(1) { left: 8%; top: 5vh; width: 460px; }
-        .artwork:nth-child(2) { right: 8%; left: auto; top: 55vh; width: 480px; }
-        .artwork:nth-child(3) { left: 10%; top: 105vh; width: 440px; }
-        .artwork:nth-child(4) { right: 10%; left: auto; top: 155vh; width: 500px; }
-        .artwork:nth-child(5) { left: 6%; top: 210vh; width: 480px; }
-        .artwork:nth-child(6) { right: 6%; left: auto; top: 265vh; width: 460px; }
-        .artwork:nth-child(7) { left: 12%; top: 320vh; width: 500px; }
-        .artwork:nth-child(8) { right: 8%; left: auto; top: 375vh; width: 440px; }
-        .artwork:nth-child(9) { left: 8%; top: 425vh; width: 480px; }
-        .artwork:nth-child(10) { right: 10%; left: auto; top: 480vh; width: 460px; }
-        .artwork:nth-child(11) { left: 6%; top: 535vh; width: 500px; }
-        .artwork:nth-child(12) { right: 6%; left: auto; top: 590vh; width: 480px; }
-        .artwork:nth-child(13) { left: 10%; top: 645vh; width: 440px; }
-        .artwork:nth-child(14) { right: 8%; left: auto; top: 695vh; width: 500px; }
-        .artwork:nth-child(15) { left: 8%; top: 750vh; width: 460px; }
-        .artwork:nth-child(16) { right: 10%; left: auto; top: 805vh; width: 480px; }
-        .artwork:nth-child(17) { left: 6%; top: 860vh; width: 500px; }
-        .artwork:nth-child(18) { right: 6%; left: auto; top: 915vh; width: 440px; }
-        .artwork:nth-child(19) { left: 12%; top: 965vh; width: 480px; }
-        .artwork:nth-child(20) { right: 8%; left: auto; top: 1020vh; width: 460px; }
-        .artwork:nth-child(21) { left: 8%; top: 1075vh; width: 500px; }
-        .artwork:nth-child(22) { right: 10%; left: auto; top: 1130vh; width: 480px; }
-        .artwork:nth-child(23) { left: 6%; top: 1185vh; width: 440px; }
 
         @media (max-width: 900px) {
             .canvas { min-height: 1600vh; }
@@ -570,12 +570,11 @@
             .artwork:nth-child(23) { top: 1391vh; }
 
             .sticky-title { font-size: 2.5rem; }
-            .filter-button { bottom: 16px; padding: 14px 24px; font-size: 0.9rem; }
+            .filter-buttons { bottom: 16px; gap: 8px; }
+            .filter-btn { padding: 12px 20px; font-size: 0.85rem; }
             .filter-menu {
-                bottom: 16px;
-                padding: 28px 32px;
-                flex-direction: column;
-                gap: 28px;
+                bottom: 80px;
+                padding: 24px 28px;
                 max-width: 90vw;
             }
             .filter-option { font-size: 1.1rem; }
@@ -598,33 +597,44 @@
         <span class="close">✕</span>
     </div>
 
-    <button class="filter-button">Filter</button>
+    <div class="filter-buttons">
+        <button class="filter-btn" data-menu="artists">Artist</button>
+        <button class="filter-btn" data-menu="status">Status</button>
+        <button class="filter-btn" data-menu="theme">Theme</button>
+    </div>
 
-    <div class="filter-menu">
-        <button class="filter-menu-close">✕</button>
-        <div class="filter-section">
-            <span class="filter-section-title">Artists</span>
-            <div class="filter-options filter-artists">
-                <div class="filter-option" data-artist="pol-sola">Pol Sola</div>
-                <div class="filter-option" data-artist="anoukia-perrey">Anoukia Perrey</div>
-                <div class="filter-option" data-artist="jer-bosmans">Jer Bosmans</div>
-                <div class="filter-option" data-artist="mario-carrillo">Mario Carrillo</div>
-                <div class="filter-option" data-artist="olivia-pedigo">Olivia Pedigo</div>
-            </div>
+    <div class="filter-menu" id="menu-artists">
+        <div class="filter-options filter-artists">
+            <div class="filter-option" data-artist="pol-sola">Pol Sola</div>
+            <div class="filter-option" data-artist="anoukia-perrey">Anoukia Perrey</div>
+            <div class="filter-option" data-artist="jer-bosmans">Jer Bosmans</div>
+            <div class="filter-option" data-artist="mario-carrillo">Mario Carrillo</div>
+            <div class="filter-option" data-artist="olivia-pedigo">Olivia Pedigo</div>
         </div>
-        <div class="filter-section">
-            <span class="filter-section-title">Status</span>
-            <div class="filter-options filter-tags">
-                <div class="filter-option" data-tag="draft"><span class="tag tag-draft">Draft</span></div>
-                <div class="filter-option" data-tag="ready"><span class="tag tag-ready">Ready</span></div>
-                <div class="filter-option" data-tag="licensed"><span class="tag tag-licensed">Licensed</span></div>
-            </div>
+    </div>
+
+    <div class="filter-menu" id="menu-status">
+        <div class="filter-options filter-tags">
+            <div class="filter-option" data-tag="draft"><span class="tag tag-draft">Draft</span></div>
+            <div class="filter-option" data-tag="ready"><span class="tag tag-ready">Ready</span></div>
+            <div class="filter-option" data-tag="licensed"><span class="tag tag-licensed">Licensed</span></div>
+        </div>
+    </div>
+
+    <div class="filter-menu" id="menu-theme">
+        <div class="filter-options filter-themes">
+            <div class="filter-option" data-theme="logo">Logo</div>
+            <div class="filter-option" data-theme="remix">Remix</div>
+            <div class="filter-option" data-theme="loading">Loading</div>
         </div>
     </div>
 
     <h1 class="sticky-title">Collabs</h1>
 
+    <button class="showcase-close">✕ Close</button>
+
     <div class="showcase-overlay">
+        <div class="artist-header"></div>
         <div class="showcase-scroll"></div>
     </div>
 
@@ -634,7 +644,7 @@
 
     <div class="canvas">
         <!-- Pol Sola - Licensed -->
-        <article class="artwork" data-artist="pol-sola" data-tag="licensed">
+        <article class="artwork" data-artist="pol-sola" data-tag="licensed" data-theme="logo">
             <div class="artwork-image">
                 <video src="assets/pol-sola/01_LOGO-Orbits_H264-Low.mp4" autoplay loop muted playsinline></video>
             </div>
@@ -648,7 +658,7 @@
         </article>
 
         <!-- Anoukia Perrey - Ready -->
-        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready">
+        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready" data-theme="loading">
             <div class="artwork-image">
                 <video src="assets/anoukia-perrey/00.mp4" autoplay loop muted playsinline></video>
             </div>
@@ -662,7 +672,7 @@
         </article>
 
         <!-- Jer Bosmans - Licensed -->
-        <article class="artwork" data-artist="jer-bosmans" data-tag="licensed">
+        <article class="artwork" data-artist="jer-bosmans" data-tag="licensed" data-theme="remix">
             <div class="artwork-image">
                 <img src="assets/jer-bosmans/Wabi_Artwork_License_1.png" alt="Jer Bosmans artwork">
             </div>
@@ -676,7 +686,7 @@
         </article>
 
         <!-- Pol Sola - Licensed -->
-        <article class="artwork" data-artist="pol-sola" data-tag="licensed">
+        <article class="artwork" data-artist="pol-sola" data-tag="licensed" data-theme="loading">
             <div class="artwork-image">
                 <video src="assets/pol-sola/04_ESFERA_H264-Low.mp4" autoplay loop muted playsinline></video>
             </div>
@@ -690,7 +700,7 @@
         </article>
 
         <!-- Mario Carrillo - Draft -->
-        <article class="artwork" data-artist="mario-carrillo" data-tag="draft">
+        <article class="artwork" data-artist="mario-carrillo" data-tag="draft" data-theme="remix">
             <div class="artwork-image">
                 <video src="assets/mario-carrillo/T1%2001.mp4" autoplay loop muted playsinline></video>
             </div>
@@ -704,7 +714,7 @@
         </article>
 
         <!-- Anoukia Perrey - Ready -->
-        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready">
+        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready" data-theme="loading">
             <div class="artwork-image">
                 <video src="assets/anoukia-perrey/02.mp4" autoplay loop muted playsinline></video>
             </div>
@@ -718,7 +728,7 @@
         </article>
 
         <!-- Jer Bosmans - Licensed -->
-        <article class="artwork" data-artist="jer-bosmans" data-tag="licensed">
+        <article class="artwork" data-artist="jer-bosmans" data-tag="licensed" data-theme="remix">
             <div class="artwork-image">
                 <img src="assets/jer-bosmans/Wabi_Artwork_License_3_A.png" alt="Jer Bosmans artwork">
             </div>
@@ -732,7 +742,7 @@
         </article>
 
         <!-- Pol Sola - Licensed -->
-        <article class="artwork" data-artist="pol-sola" data-tag="licensed">
+        <article class="artwork" data-artist="pol-sola" data-tag="licensed" data-theme="remix">
             <div class="artwork-image">
                 <video src="assets/pol-sola/02_SUNSET_H264-Low.mp4" autoplay loop muted playsinline></video>
             </div>
@@ -746,7 +756,7 @@
         </article>
 
         <!-- Olivia Pedigo - Draft -->
-        <article class="artwork" data-artist="olivia-pedigo" data-tag="draft">
+        <article class="artwork" data-artist="olivia-pedigo" data-tag="draft" data-theme="loading">
             <div class="artwork-image">
                 <video src="assets/olivia-pedigo/wabi-animation-1-27%20(1).mp4" autoplay loop muted playsinline></video>
             </div>
@@ -760,7 +770,7 @@
         </article>
 
         <!-- Anoukia Perrey - Ready -->
-        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready">
+        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready" data-theme="loading">
             <div class="artwork-image">
                 <video src="assets/anoukia-perrey/05.mp4" autoplay loop muted playsinline></video>
             </div>
@@ -774,7 +784,7 @@
         </article>
 
         <!-- Mario Carrillo - Draft -->
-        <article class="artwork" data-artist="mario-carrillo" data-tag="draft">
+        <article class="artwork" data-artist="mario-carrillo" data-tag="draft" data-theme="logo">
             <div class="artwork-image">
                 <video src="assets/mario-carrillo/T1%2002.mp4" autoplay loop muted playsinline></video>
             </div>
@@ -788,7 +798,7 @@
         </article>
 
         <!-- Jer Bosmans - Licensed -->
-        <article class="artwork" data-artist="jer-bosmans" data-tag="licensed">
+        <article class="artwork" data-artist="jer-bosmans" data-tag="licensed" data-theme="remix">
             <div class="artwork-image">
                 <img src="assets/jer-bosmans/Wabi_Artwork_License_4.png" alt="Jer Bosmans artwork">
             </div>
@@ -802,7 +812,7 @@
         </article>
 
         <!-- Pol Sola - Licensed -->
-        <article class="artwork" data-artist="pol-sola" data-tag="licensed">
+        <article class="artwork" data-artist="pol-sola" data-tag="licensed" data-theme="loading">
             <div class="artwork-image">
                 <video src="assets/pol-sola/03_RIPPLE-Color_H264-Low.mp4" autoplay loop muted playsinline></video>
             </div>
@@ -816,7 +826,7 @@
         </article>
 
         <!-- Anoukia Perrey - Ready -->
-        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready">
+        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready" data-theme="loading">
             <div class="artwork-image">
                 <video src="assets/anoukia-perrey/08.mp4" autoplay loop muted playsinline></video>
             </div>
@@ -830,7 +840,7 @@
         </article>
 
         <!-- Mario Carrillo - Draft -->
-        <article class="artwork" data-artist="mario-carrillo" data-tag="draft">
+        <article class="artwork" data-artist="mario-carrillo" data-tag="draft" data-theme="remix">
             <div class="artwork-image">
                 <video src="assets/mario-carrillo/T1%2003.mp4" autoplay loop muted playsinline></video>
             </div>
@@ -844,7 +854,7 @@
         </article>
 
         <!-- Jer Bosmans - Licensed -->
-        <article class="artwork" data-artist="jer-bosmans" data-tag="licensed">
+        <article class="artwork" data-artist="jer-bosmans" data-tag="licensed" data-theme="remix">
             <div class="artwork-image">
                 <img src="assets/jer-bosmans/Wabi_Artwork_License_3_B.png" alt="Jer Bosmans artwork">
             </div>
@@ -858,7 +868,7 @@
         </article>
 
         <!-- Pol Sola - Licensed -->
-        <article class="artwork" data-artist="pol-sola" data-tag="licensed">
+        <article class="artwork" data-artist="pol-sola" data-tag="licensed" data-theme="logo">
             <div class="artwork-image">
                 <video src="assets/pol-sola/05_TRAILS_H264-Low.mp4" autoplay loop muted playsinline></video>
             </div>
@@ -872,7 +882,7 @@
         </article>
 
         <!-- Anoukia Perrey - Ready -->
-        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready">
+        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready" data-theme="loading">
             <div class="artwork-image">
                 <video src="assets/anoukia-perrey/09.mp4" autoplay loop muted playsinline></video>
             </div>
@@ -886,7 +896,7 @@
         </article>
 
         <!-- Mario Carrillo - Draft -->
-        <article class="artwork" data-artist="mario-carrillo" data-tag="draft">
+        <article class="artwork" data-artist="mario-carrillo" data-tag="draft" data-theme="remix">
             <div class="artwork-image">
                 <video src="assets/mario-carrillo/T1%2004.mp4" autoplay loop muted playsinline></video>
             </div>
@@ -900,7 +910,7 @@
         </article>
 
         <!-- Pol Sola - Licensed -->
-        <article class="artwork" data-artist="pol-sola" data-tag="licensed">
+        <article class="artwork" data-artist="pol-sola" data-tag="licensed" data-theme="logo">
             <div class="artwork-image">
                 <video src="assets/pol-sola/06_METABALLS-ColorBack_H264-Low.mp4" autoplay loop muted playsinline></video>
             </div>
@@ -914,7 +924,7 @@
         </article>
 
         <!-- Anoukia Perrey - Ready -->
-        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready">
+        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready" data-theme="loading">
             <div class="artwork-image">
                 <video src="assets/anoukia-perrey/10.mp4" autoplay loop muted playsinline></video>
             </div>
@@ -928,7 +938,7 @@
         </article>
 
         <!-- Jer Bosmans - Licensed -->
-        <article class="artwork" data-artist="jer-bosmans" data-tag="licensed">
+        <article class="artwork" data-artist="jer-bosmans" data-tag="licensed" data-theme="remix">
             <div class="artwork-image">
                 <img src="assets/jer-bosmans/jer-cropped.png" alt="Jer Bosmans artwork">
             </div>
@@ -942,7 +952,7 @@
         </article>
 
         <!-- Anoukia Perrey - Ready -->
-        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready">
+        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready" data-theme="loading">
             <div class="artwork-image">
                 <video src="assets/anoukia-perrey/13.mp4" autoplay loop muted playsinline></video>
             </div>
@@ -961,37 +971,111 @@
         const filterBar = document.querySelector('.filter-bar');
         const filterName = document.querySelector('.filter-name');
         const closeBtn = document.querySelector('.close');
-        const filterButton = document.querySelector('.filter-button');
-        const filterMenu = document.querySelector('.filter-menu');
-        const filterMenuClose = document.querySelector('.filter-menu-close');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const filterMenus = document.querySelectorAll('.filter-menu');
         const filterArtists = document.querySelectorAll('.filter-artists .filter-option');
         const filterTags = document.querySelectorAll('.filter-tags .filter-option');
+        const filterThemes = document.querySelectorAll('.filter-themes .filter-option');
         const showcaseOverlay = document.querySelector('.showcase-overlay');
         const showcaseScroll = document.querySelector('.showcase-scroll');
+        const artistHeader = document.querySelector('.artist-header');
+        const showcaseClose = document.querySelector('.showcase-close');
         const detailOverlay = document.querySelector('.detail-overlay');
         const detailContent = document.querySelector('.detail-content');
+
+        // Artist data with descriptions and social links
+        const artistData = {
+            'pol-sola': {
+                name: 'Pol Sola',
+                description: 'Visual Artist & Director based in Barcelona',
+                socials: {
+                    instagram: 'https://instagram.com/polsola',
+                    website: 'https://behance.net/polsola'
+                }
+            },
+            'anoukia-perrey': {
+                name: 'Anoukia Perrey',
+                description: '3D Creative Director & Freelancer',
+                socials: {
+                    instagram: 'https://instagram.com/anoukiapr',
+                    twitter: 'https://x.com/anoukiap',
+                    website: 'https://pink.anoukiaperrey.com'
+                }
+            },
+            'jer-bosmans': {
+                name: 'Jer Bosmans',
+                description: 'Visual Artist & Designer based in Netherlands',
+                socials: {
+                    instagram: 'https://instagram.com/jerbosmans',
+                    twitter: 'https://x.com/jerbosmans',
+                    website: 'https://byjer.com'
+                }
+            },
+            'mario-carrillo': {
+                name: 'Mario Carrillo',
+                description: 'Creative Coder & Visual Artist based in Mexico',
+                socials: {
+                    instagram: 'https://instagram.com/marioecg',
+                    website: 'https://marioecg.com'
+                }
+            },
+            'olivia-pedigo': {
+                name: 'Olivia Pedigo',
+                description: '3D Artist & Animator based in Miami',
+                socials: {
+                    instagram: 'https://instagram.com/oliviapedi',
+                    website: 'https://oliviapedigo.com'
+                }
+            }
+        };
 
         let currentFilter = { type: null, value: null };
         let isShowcaseActive = false;
         let isDetailActive = false;
-        let isFilterMenuOpen = false;
+        let openMenuId = null;
 
-        // Filter button
-        filterButton.addEventListener('click', () => {
-            isFilterMenuOpen = true;
-            document.body.classList.add('filter-menu-open');
+        function closeAllMenus() {
+            filterMenus.forEach(menu => menu.classList.remove('open'));
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            openMenuId = null;
+        }
+
+        // Filter buttons
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const menuId = 'menu-' + btn.dataset.menu;
+                const menu = document.getElementById(menuId);
+
+                if (openMenuId === menuId) {
+                    closeAllMenus();
+                } else {
+                    closeAllMenus();
+
+                    // Position menu above the button
+                    const btnRect = btn.getBoundingClientRect();
+                    const menuWidth = menu.offsetWidth || 200;
+                    const leftPos = btnRect.left + (btnRect.width / 2) - (menuWidth / 2);
+
+                    // Keep menu within viewport
+                    const maxLeft = window.innerWidth - menuWidth - 20;
+                    menu.style.left = Math.max(20, Math.min(leftPos, maxLeft)) + 'px';
+
+                    menu.classList.add('open');
+                    btn.classList.add('active');
+                    openMenuId = menuId;
+                }
+            });
         });
 
-        filterMenuClose.addEventListener('click', () => {
-            isFilterMenuOpen = false;
-            document.body.classList.remove('filter-menu-open');
-        });
-
-        // Click outside filter menu to close
+        // Click outside to close menus
         document.addEventListener('click', (e) => {
-            if (isFilterMenuOpen && !filterMenu.contains(e.target) && !filterButton.contains(e.target)) {
-                isFilterMenuOpen = false;
-                document.body.classList.remove('filter-menu-open');
+            if (openMenuId) {
+                const openMenu = document.getElementById(openMenuId);
+                const activeBtn = document.querySelector('.filter-btn.active');
+                if (!openMenu.contains(e.target) && (!activeBtn || !activeBtn.contains(e.target))) {
+                    closeAllMenus();
+                }
             }
         });
 
@@ -1000,8 +1084,7 @@
             option.addEventListener('click', () => {
                 const artistId = option.dataset.artist;
                 const displayName = option.textContent;
-                isFilterMenuOpen = false;
-                document.body.classList.remove('filter-menu-open');
+                closeAllMenus();
                 openShowcase(artistId, displayName);
             });
         });
@@ -1011,20 +1094,39 @@
             option.addEventListener('click', () => {
                 const tagValue = option.dataset.tag;
                 const displayName = option.querySelector('.tag').textContent;
-                isFilterMenuOpen = false;
-                document.body.classList.remove('filter-menu-open');
+                closeAllMenus();
                 applyTagFilter(tagValue, displayName);
             });
         });
 
-        // Click artwork image to open detail view
+        // Filter by theme from menu
+        filterThemes.forEach(option => {
+            option.addEventListener('click', () => {
+                const themeValue = option.dataset.theme;
+                const displayName = option.textContent;
+                closeAllMenus();
+                applyThemeFilter(themeValue, displayName);
+            });
+        });
+
+        // Click artwork image to open detail view (from canvas or showcase)
         document.addEventListener('click', (e) => {
             const artworkImage = e.target.closest('.artwork-image');
-            if (artworkImage && artworkImage.closest('.canvas .artwork')) {
-                e.stopPropagation();
-                const artwork = artworkImage.closest('.artwork');
-                openDetail(artwork);
-                return;
+            if (artworkImage) {
+                // From main canvas
+                if (artworkImage.closest('.canvas .artwork')) {
+                    e.stopPropagation();
+                    const artwork = artworkImage.closest('.artwork');
+                    openDetail(artwork);
+                    return;
+                }
+                // From showcase
+                if (artworkImage.closest('.showcase-item')) {
+                    e.stopPropagation();
+                    const showcaseItem = artworkImage.closest('.showcase-item');
+                    openDetailFromShowcase(showcaseItem);
+                    return;
+                }
             }
         });
 
@@ -1065,10 +1167,11 @@
         });
 
         closeBtn.addEventListener('click', clearFilter);
+        showcaseClose.addEventListener('click', clearFilter);
 
         // Click outside overlays to close
         showcaseOverlay.addEventListener('click', (e) => {
-            if (e.target === showcaseOverlay) {
+            if (e.target === showcaseOverlay || e.target === artistHeader) {
                 clearFilter();
             }
         });
@@ -1079,7 +1182,6 @@
             }
         });
 
-        let flyingElement = null;
         let currentDetailArtwork = null;
 
         function openDetail(artwork) {
@@ -1090,113 +1192,73 @@
             const artworkTitle = artwork.querySelector('.artwork-title')?.textContent || 'Artwork';
             filterName.textContent = artworkTitle;
 
-            // Get source position
-            const artworkImage = artwork.querySelector('.artwork-image');
-            const sourceRect = artworkImage.getBoundingClientRect();
-
-            // Create flying element
-            const mediaEl = artworkImage.querySelector('video, img');
-            flyingElement = document.createElement('div');
-            flyingElement.className = 'flying-artwork';
-            flyingElement.style.top = sourceRect.top + 'px';
-            flyingElement.style.left = sourceRect.left + 'px';
-            flyingElement.style.width = sourceRect.width + 'px';
-            flyingElement.style.height = sourceRect.height + 'px';
-
-            // Clone the media
-            const mediaClone = mediaEl.cloneNode(true);
-            if (mediaClone.tagName === 'VIDEO') {
-                mediaClone.currentTime = mediaEl.currentTime;
-                mediaClone.muted = true;
-                mediaClone.play();
-            }
-            flyingElement.appendChild(mediaClone);
-            document.body.appendChild(flyingElement);
-
-            // Hide original
-            artwork.classList.add('in-detail');
-
-            // Trigger blur immediately
+            // Trigger blur
             document.body.classList.add('detail-active');
             document.body.classList.remove('filtered', 'showcase-active');
 
-            // Calculate destination (higher up on screen)
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
-            const maxWidth = Math.min(viewportWidth * 0.75, 800);
-            const maxHeight = viewportHeight * 0.7;
-            const aspectRatio = sourceRect.width / sourceRect.height;
-            let destWidth = maxWidth;
-            let destHeight = destWidth / aspectRatio;
+            // Set up detail content
+            detailContent.innerHTML = '';
 
-            // Constrain by height if needed
-            if (destHeight > maxHeight) {
-                destHeight = maxHeight;
-                destWidth = destHeight * aspectRatio;
+            const clone = artwork.cloneNode(true);
+            clone.classList.remove('artwork');
+
+            const video = clone.querySelector('video');
+            if (video) {
+                video.setAttribute('controls', '');
+                video.removeAttribute('muted');
+                video.loop = true;
             }
 
-            const destTop = viewportHeight * 0.08; // 8vh from top
-            const destLeft = (viewportWidth - destWidth) / 2;
+            const imageWrapper = clone.querySelector('.artwork-image');
+            const infoWrapper = clone.querySelector('.artwork-info');
 
-            // Animate to destination
-            requestAnimationFrame(() => {
-                flyingElement.style.top = destTop + 'px';
-                flyingElement.style.left = destLeft + 'px';
-                flyingElement.style.width = destWidth + 'px';
-                flyingElement.style.height = destHeight + 'px';
-                flyingElement.classList.add('at-destination');
-            });
+            if (imageWrapper) {
+                imageWrapper.removeAttribute('style');
+                detailContent.appendChild(imageWrapper);
+            }
+            if (infoWrapper) detailContent.appendChild(infoWrapper);
 
-            // After animation, set up the detail content
-            setTimeout(() => {
-                detailContent.innerHTML = '';
+            detailContent.classList.add('visible');
 
-                const clone = artwork.cloneNode(true);
-                clone.classList.remove('artwork', 'in-detail');
+            if (video) video.play();
+        }
 
-                const video = clone.querySelector('video');
-                if (video) {
-                    video.setAttribute('controls', '');
-                    video.removeAttribute('muted');
-                    video.currentTime = mediaClone.tagName === 'VIDEO' ? mediaClone.currentTime : 0;
-                    video.loop = true;
-                }
+        function openDetailFromShowcase(showcaseItem) {
+            isDetailActive = true;
+            currentFilter = { type: 'detail-from-showcase', value: showcaseItem };
 
-                const imageWrapper = clone.querySelector('.artwork-image');
-                const infoWrapper = clone.querySelector('.artwork-info');
+            const artworkTitle = showcaseItem.querySelector('.artwork-title')?.textContent || 'Artwork';
+            filterName.textContent = artworkTitle;
 
-                if (imageWrapper) {
-                    imageWrapper.removeAttribute('style');
-                    detailContent.appendChild(imageWrapper);
-                }
-                if (infoWrapper) detailContent.appendChild(infoWrapper);
+            // Keep showcase visible but blur it
+            document.body.classList.add('detail-active');
+            // Don't remove showcase-active so it stays visible
 
-                // Pre-position detail content to match flying element exactly
-                detailContent.style.opacity = '0';
-                detailContent.classList.add('visible');
+            // Set up detail content
+            detailContent.innerHTML = '';
 
-                // Small delay to let detail render, then crossfade
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        detailContent.style.opacity = '1';
-                        detailContent.style.transition = 'opacity 0.15s ease';
+            const clone = showcaseItem.cloneNode(true);
+            clone.classList.remove('showcase-item', 'visible');
 
-                        if (video) video.play();
+            const video = clone.querySelector('video');
+            if (video) {
+                video.setAttribute('controls', '');
+                video.removeAttribute('muted');
+                video.loop = true;
+            }
 
-                        // Hide flying element simultaneously
-                        if (flyingElement) {
-                            flyingElement.style.opacity = '0';
-                            setTimeout(() => {
-                                if (flyingElement && flyingElement.parentNode) {
-                                    flyingElement.parentNode.removeChild(flyingElement);
-                                }
-                                flyingElement = null;
-                                detailContent.style.transition = '';
-                            }, 150);
-                        }
-                    });
-                });
-            }, 700);
+            const imageWrapper = clone.querySelector('.artwork-image');
+            const infoWrapper = clone.querySelector('.artwork-info');
+
+            if (imageWrapper) {
+                imageWrapper.removeAttribute('style');
+                detailContent.appendChild(imageWrapper);
+            }
+            if (infoWrapper) detailContent.appendChild(infoWrapper);
+
+            detailContent.classList.add('visible');
+
+            if (video) video.play();
         }
 
         function openShowcase(artistId, displayName) {
@@ -1209,6 +1271,23 @@
             document.body.classList.add('showcase-active');
             document.body.classList.remove('filtered', 'detail-active');
             filterName.textContent = displayName;
+
+            // Render artist header
+            const artist = artistData[artistId];
+            if (artist) {
+                let socialsHTML = '';
+                if (artist.socials.twitter) socialsHTML += `<a href="${artist.socials.twitter}" target="_blank" title="X/Twitter">𝕏</a>`;
+                if (artist.socials.instagram) socialsHTML += `<a href="${artist.socials.instagram}" target="_blank" title="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>`;
+                if (artist.socials.website) socialsHTML += `<a href="${artist.socials.website}" target="_blank" title="Website"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm1 16.057v-3.057h2.994c-.059 1.143-.212 2.24-.456 3.279-.823-.12-1.674-.188-2.538-.222zm1.957 2.162c-.499 1.33-1.159 2.497-1.957 3.456v-3.62c.666.028 1.319.081 1.957.164zm-1.957-7.219v-3.015c.868-.034 1.721-.103 2.548-.224.238 1.027.389 2.111.446 3.239h-2.994zm0-5.014v-3.661c.806.969 1.471 2.15 1.971 3.496-.642.084-1.3.137-1.971.165zm2.703-3.267c1.237.496 2.354 1.228 3.29 2.146-.642.234-1.311.442-2.019.607-.344-.992-.775-1.91-1.271-2.753zm-7.241 13.56c-.244-1.039-.398-2.136-.456-3.279h2.994v3.057c-.865.034-1.714.102-2.538.222zm2.538 1.776v3.62c-.798-.959-1.458-2.126-1.957-3.456.638-.083 1.291-.136 1.957-.164zm-2.994-7.055c.057-1.128.207-2.212.446-3.239.827.121 1.68.19 2.548.224v3.015h-2.994zm1.024-5.179c.5-1.346 1.165-2.527 1.97-3.496v3.661c-.671-.028-1.329-.081-1.97-.165zm-2.005-.35c-.708-.165-1.377-.373-2.018-.607.937-.918 2.053-1.65 3.29-2.146-.496.844-.927 1.762-1.272 2.753zm-.549 1.918c-.264 1.151-.434 2.36-.492 3.611h-3.933c.165-1.658.739-3.197 1.617-4.518.88.361 1.816.67 2.808.907zm.009 9.262c-.988.236-1.92.542-2.797.9-.89-1.328-1.471-2.879-1.637-4.551h3.934c.058 1.265.231 2.488.5 3.651zm.553 1.917c.342.976.768 1.881 1.257 2.712-1.223-.49-2.326-1.211-3.256-2.115.636-.229 1.299-.435 1.999-.597zm9.924 0c.7.163 1.362.367 1.999.597-.931.903-2.034 1.625-3.257 2.116.489-.832.915-1.737 1.258-2.713zm.553-1.917c.27-1.163.442-2.386.501-3.651h3.934c-.167 1.672-.748 3.223-1.638 4.551-.877-.358-1.81-.664-2.797-.9zm.501-5.651c-.058-1.251-.229-2.46-.492-3.611.992-.237 1.929-.546 2.809-.907.877 1.321 1.451 2.86 1.616 4.518h-3.933z"/></svg></a>`;
+
+                artistHeader.innerHTML = `
+                    <h2>${artist.name}</h2>
+                    <p class="artist-description">${artist.description}</p>
+                    <div class="artist-socials">${socialsHTML}</div>
+                `;
+            } else {
+                artistHeader.innerHTML = `<h2>${displayName}</h2>`;
+            }
 
             showcaseScroll.innerHTML = '';
 
@@ -1245,24 +1324,89 @@
         }
 
         function applyTagFilter(tagValue, displayName) {
-            if (isShowcaseActive) clearShowcase();
             if (isDetailActive) clearDetail();
 
+            isShowcaseActive = true;
             currentFilter = { type: 'tag', value: tagValue };
-            document.body.classList.add('filtered');
+            document.body.classList.add('showcase-active');
+            document.body.classList.remove('filtered', 'detail-active');
             filterName.textContent = displayName;
 
-            tagBarTags.forEach(t => t.classList.remove('active'));
-            const activeTag = document.querySelector(`.tag-bar .tag[data-tag="${tagValue}"]`);
-            if (activeTag) activeTag.classList.add('active');
+            // Simple header for tag filter
+            artistHeader.innerHTML = `<h2>${displayName}</h2><p class="artist-description">Status filter</p>`;
 
+            showcaseScroll.innerHTML = '';
+
+            const matchingArtworks = [];
             artworks.forEach(artwork => {
                 if (artwork.dataset.tag === tagValue) {
-                    artwork.classList.add('active');
-                } else {
-                    artwork.classList.remove('active');
+                    matchingArtworks.push(artwork);
                 }
             });
+
+            matchingArtworks.forEach((artwork, index) => {
+                const clone = artwork.cloneNode(true);
+                clone.classList.remove('artwork');
+                clone.classList.add('showcase-item');
+                clone.removeAttribute('style');
+
+                const video = clone.querySelector('video');
+                if (video) {
+                    video.currentTime = 0;
+                    video.play();
+                }
+
+                showcaseScroll.appendChild(clone);
+
+                setTimeout(() => {
+                    clone.classList.add('visible');
+                }, 100 + (index * 80));
+            });
+
+            showcaseScroll.scrollLeft = 0;
+        }
+
+        function applyThemeFilter(themeValue, displayName) {
+            if (isDetailActive) clearDetail();
+
+            isShowcaseActive = true;
+            currentFilter = { type: 'theme', value: themeValue };
+            document.body.classList.add('showcase-active');
+            document.body.classList.remove('filtered', 'detail-active');
+            filterName.textContent = displayName;
+
+            // Simple header for theme filter
+            artistHeader.innerHTML = `<h2>${displayName}</h2><p class="artist-description">Theme filter</p>`;
+
+            showcaseScroll.innerHTML = '';
+
+            const matchingArtworks = [];
+            artworks.forEach(artwork => {
+                if (artwork.dataset.theme === themeValue) {
+                    matchingArtworks.push(artwork);
+                }
+            });
+
+            matchingArtworks.forEach((artwork, index) => {
+                const clone = artwork.cloneNode(true);
+                clone.classList.remove('artwork');
+                clone.classList.add('showcase-item');
+                clone.removeAttribute('style');
+
+                const video = clone.querySelector('video');
+                if (video) {
+                    video.currentTime = 0;
+                    video.play();
+                }
+
+                showcaseScroll.appendChild(clone);
+
+                setTimeout(() => {
+                    clone.classList.add('visible');
+                }, 100 + (index * 80));
+            });
+
+            showcaseScroll.scrollLeft = 0;
         }
 
         function clearDetail() {
@@ -1272,75 +1416,13 @@
             const video = detailContent.querySelector('video');
             if (video) video.pause();
 
-            // If we have a source artwork, animate back
-            if (currentDetailArtwork) {
-                const artworkImage = currentDetailArtwork.querySelector('.artwork-image');
-                const sourceRect = artworkImage.getBoundingClientRect();
-                const detailImage = detailContent.querySelector('.artwork-image');
-
-                if (detailImage) {
-                    const detailRect = detailImage.getBoundingClientRect();
-
-                    // Create flying element for reverse animation
-                    const mediaEl = detailImage.querySelector('video, img');
-                    flyingElement = document.createElement('div');
-                    flyingElement.className = 'flying-artwork at-destination';
-                    flyingElement.style.top = detailRect.top + 'px';
-                    flyingElement.style.left = detailRect.left + 'px';
-                    flyingElement.style.width = detailRect.width + 'px';
-                    flyingElement.style.height = detailRect.height + 'px';
-
-                    const mediaClone = mediaEl.cloneNode(true);
-                    if (mediaClone.tagName === 'VIDEO') {
-                        mediaClone.muted = true;
-                        mediaClone.removeAttribute('controls');
-                        mediaClone.play();
-                    }
-                    flyingElement.appendChild(mediaClone);
-                    document.body.appendChild(flyingElement);
-
-                    // Cross-fade: hide detail content while showing flying element
-                    detailContent.style.opacity = '0';
-                    detailContent.style.transition = 'opacity 0.15s ease';
-
-                    // Animate back to source after brief delay
-                    setTimeout(() => {
-                        detailContent.classList.remove('visible');
-                        detailContent.style.transition = '';
-
-                        flyingElement.classList.remove('at-destination');
-                        flyingElement.style.top = sourceRect.top + 'px';
-                        flyingElement.style.left = sourceRect.left + 'px';
-                        flyingElement.style.width = sourceRect.width + 'px';
-                        flyingElement.style.height = sourceRect.height + 'px';
-                    }, 50);
-
-                    // Cleanup after animation
-                    setTimeout(() => {
-                        if (flyingElement && flyingElement.parentNode) {
-                            flyingElement.parentNode.removeChild(flyingElement);
-                        }
-                        flyingElement = null;
-                        currentDetailArtwork.classList.remove('in-detail');
-                        currentDetailArtwork = null;
-                        detailContent.innerHTML = '';
-                    }, 750);
-                }
-            } else {
-                detailContent.classList.remove('visible');
-                setTimeout(() => {
-                    detailContent.innerHTML = '';
-                }, 400);
-            }
-
+            detailContent.classList.remove('visible');
             document.body.classList.remove('detail-active');
-            artworks.forEach(artwork => {
-                artwork.classList.remove('in-detail');
-            });
+            currentDetailArtwork = null;
 
             setTimeout(() => {
                 detailContent.innerHTML = '';
-            }, 400);
+            }, 300);
         }
 
         function clearShowcase() {
