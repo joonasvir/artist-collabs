@@ -34,14 +34,15 @@
             transition: opacity 0.5s ease;
         }
 
-        body.showcase-active .sticky-title {
+        body.showcase-active .sticky-title,
+        body.detail-active .sticky-title {
             opacity: 0.1;
         }
 
         .canvas {
             position: relative;
-            min-height: 300vh;
-            padding: 10vh 0;
+            min-height: 550vh;
+            padding: 10vh 0 20vh;
         }
 
         .artwork {
@@ -56,22 +57,26 @@
         }
 
         .artwork-image {
-            border-radius: 16px;
+            border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
             position: relative;
+            background: #f0f0f0;
         }
 
-        .artwork-image .placeholder {
+        .artwork-image video,
+        .artwork-image img {
             width: 100%;
             height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
         .artwork-info {
             display: flex;
             justify-content: space-between;
             align-items: baseline;
-            padding: 12px 4px 0;
+            padding: 16px 4px 0;
             opacity: 0;
             transform: translateY(-8px);
             transition: opacity 0.3s ease, transform 0.3s ease;
@@ -85,11 +90,11 @@
         .info-left {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
         }
 
         .artist-name {
-            font-size: 1rem;
+            font-size: 1.25rem;
             font-weight: 500;
             cursor: pointer;
             transition: opacity 0.2s;
@@ -100,14 +105,14 @@
         }
 
         .artwork-title {
-            font-size: 1rem;
+            font-size: 1.25rem;
             color: #999;
         }
 
         /* Tags */
         .tag {
-            font-size: 0.7rem;
-            padding: 4px 8px;
+            font-size: 0.75rem;
+            padding: 5px 10px;
             border-radius: 100px;
             font-weight: 500;
             text-transform: uppercase;
@@ -116,27 +121,25 @@
             transition: opacity 0.2s;
         }
 
-        .tag:hover {
-            opacity: 0.7;
-        }
-
+        .tag:hover { opacity: 0.7; }
         .tag-draft { background: #f0f0f0; color: #666; }
         .tag-ready { background: #d4edda; color: #155724; }
         .tag-licensed { background: #cce5ff; color: #004085; }
         .tag-custom { background: #f8d7da; color: #721c24; }
 
-        /* Showcase mode - artist filter */
-        body.showcase-active .canvas .artwork {
+        /* Showcase mode */
+        body.showcase-active .canvas .artwork,
+        body.detail-active .canvas .artwork {
             opacity: 0.08;
             pointer-events: none;
         }
 
-        body.showcase-active .canvas .artwork.in-showcase {
+        body.showcase-active .canvas .artwork.in-showcase,
+        body.detail-active .canvas .artwork.in-detail {
             opacity: 0;
             pointer-events: none;
         }
 
-        /* Showcase overlay */
         .showcase-overlay {
             position: fixed;
             top: 0;
@@ -162,7 +165,7 @@
             transform: translateY(-50%);
             display: flex;
             align-items: center;
-            gap: 40px;
+            gap: 48px;
             padding: 0 10vw;
             overflow-x: auto;
             overflow-y: hidden;
@@ -171,13 +174,11 @@
             scroll-behavior: smooth;
         }
 
-        .showcase-scroll::-webkit-scrollbar {
-            display: none;
-        }
+        .showcase-scroll::-webkit-scrollbar { display: none; }
 
         .showcase-item {
             flex-shrink: 0;
-            width: 400px;
+            width: 480px;
             opacity: 0;
             transform: scale(0.8) translateY(40px);
             transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
@@ -197,6 +198,75 @@
         .showcase-item .artwork-info {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        /* Detail view - single artwork */
+        .detail-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 60;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5vh 5vw;
+        }
+
+        body.detail-active .detail-overlay {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .detail-content {
+            max-width: 80vw;
+            max-height: 85vh;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body.detail-active .detail-content.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .detail-content .artwork-image {
+            border-radius: 24px;
+            box-shadow: 0 12px 60px rgba(0, 0, 0, 0.2);
+            max-height: 70vh;
+            overflow: hidden;
+        }
+
+        .detail-content .artwork-image video,
+        .detail-content .artwork-image img {
+            max-height: 70vh;
+            width: auto;
+            height: auto;
+            max-width: 80vw;
+        }
+
+        .detail-content video {
+            outline: none;
+        }
+
+        .detail-content .artwork-info {
+            opacity: 1;
+            transform: translateY(0);
+            padding: 20px 8px 0;
+        }
+
+        .detail-content .artist-name {
+            font-size: 1.5rem;
+        }
+
+        .detail-content .artwork-title {
+            font-size: 1.5rem;
         }
 
         /* Filter bars */
@@ -220,7 +290,8 @@
         }
 
         body.filtered .filter-bar,
-        body.showcase-active .filter-bar {
+        body.showcase-active .filter-bar,
+        body.detail-active .filter-bar {
             opacity: 1;
             pointer-events: auto;
         }
@@ -231,82 +302,184 @@
             transition: opacity 0.2s;
         }
 
-        .filter-bar .close:hover {
-            opacity: 1;
-        }
+        .filter-bar .close:hover { opacity: 1; }
 
-        .tag-bar {
+        /* Filter button and menu */
+        .filter-button {
             position: fixed;
             bottom: 24px;
             left: 50%;
             transform: translateX(-50%);
-            background: #fff;
-            border: 1px solid #e0e0e0;
-            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 14px 28px;
             border-radius: 100px;
-            font-size: 0.75rem;
+            font-size: 0.9rem;
+            font-weight: 500;
             z-index: 100;
+            cursor: pointer;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-            transition: opacity 0.3s ease;
         }
 
-        body.showcase-active .tag-bar {
+        .filter-button:hover {
+            background: rgba(255, 255, 255, 0.95);
+            transform: translateX(-50%) scale(1.02);
+        }
+
+        .filter-button svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        body.showcase-active .filter-button,
+        body.detail-active .filter-button {
             opacity: 0;
             pointer-events: none;
         }
 
-        .tag-bar .tag { opacity: 0.5; }
-        .tag-bar .tag:hover,
-        .tag-bar .tag.active { opacity: 1; }
+        body.filter-menu-open .filter-button {
+            opacity: 0;
+            pointer-events: none;
+        }
 
-        .tag-bar-label {
+        .filter-menu {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 20px 24px;
+            border-radius: 24px;
+            z-index: 100;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(-50%) translateY(20px) scale(0.95);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            gap: 32px;
+        }
+
+        body.filter-menu-open .filter-menu {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(-50%) translateY(0) scale(1);
+        }
+
+        body.showcase-active .filter-menu,
+        body.detail-active .filter-menu {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .filter-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .filter-section-title {
             font-size: 0.7rem;
             color: #999;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-right: 4px;
+            letter-spacing: 0.1em;
+            font-weight: 500;
         }
 
-        /* Artwork positions */
-        .artwork:nth-child(1) { left: 5%; top: 3vh; width: 420px; }
-        .artwork:nth-child(2) { left: 55%; top: 8vh; width: 480px; }
-        .artwork:nth-child(3) { left: 25%; top: 38vh; width: 450px; }
-        .artwork:nth-child(4) { left: 60%; top: 52vh; width: 400px; }
-        .artwork:nth-child(5) { left: 8%; top: 70vh; width: 460px; }
-        .artwork:nth-child(6) { left: 45%; top: 95vh; width: 420px; }
-        .artwork:nth-child(7) { left: 12%; top: 115vh; width: 480px; }
-        .artwork:nth-child(8) { left: 50%; top: 138vh; width: 440px; }
-        .artwork:nth-child(9) { left: 5%; top: 165vh; width: 400px; }
-        .artwork:nth-child(10) { left: 40%; top: 185vh; width: 460px; }
-        .artwork:nth-child(11) { left: 18%; top: 215vh; width: 440px; }
-        .artwork:nth-child(12) { left: 48%; top: 240vh; width: 420px; }
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
 
-        .artwork-image { aspect-ratio: 1; }
+        .filter-option {
+            font-size: 0.95rem;
+            padding: 6px 0;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-        /* Gradients */
-        .gradient-1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .gradient-2 { background: linear-gradient(135deg, #f5af19 0%, #f12711 100%); }
-        .gradient-3 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
-        .gradient-4 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
-        .gradient-5 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
-        .gradient-6 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
-        .gradient-7 { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
-        .gradient-8 { background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%); }
-        .gradient-9 { background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%); }
-        .gradient-10 { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
-        .gradient-11 { background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); }
-        .gradient-12 { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
+        .filter-option:hover {
+            opacity: 0.6;
+        }
+
+        .filter-option.active {
+            font-weight: 600;
+        }
+
+        .filter-option .tag {
+            font-size: 0.65rem;
+            padding: 3px 6px;
+        }
+
+        .filter-menu-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.05);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #666;
+            transition: background 0.2s;
+        }
+
+        .filter-menu-close:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Artwork positions - bigger tiles scattered across page */
+        .artwork { width: 480px; }
+        .artwork .artwork-image { aspect-ratio: 1; }
+
+        .artwork:nth-child(1) { left: 4%; top: 2vh; width: 520px; }
+        .artwork:nth-child(2) { left: 50%; top: 5vh; width: 500px; }
+        .artwork:nth-child(3) { left: 25%; top: 38vh; width: 480px; }
+        .artwork:nth-child(4) { left: 58%; top: 52vh; width: 520px; }
+        .artwork:nth-child(5) { left: 5%; top: 68vh; width: 500px; }
+        .artwork:nth-child(6) { left: 38%; top: 95vh; width: 480px; }
+        .artwork:nth-child(7) { left: 6%; top: 118vh; width: 520px; }
+        .artwork:nth-child(8) { left: 52%; top: 130vh; width: 500px; }
+        .artwork:nth-child(9) { left: 22%; top: 162vh; width: 480px; }
+        .artwork:nth-child(10) { left: 56%; top: 185vh; width: 520px; }
+        .artwork:nth-child(11) { left: 4%; top: 210vh; width: 500px; }
+        .artwork:nth-child(12) { left: 40%; top: 238vh; width: 480px; }
+        .artwork:nth-child(13) { left: 10%; top: 268vh; width: 520px; }
+        .artwork:nth-child(14) { left: 52%; top: 290vh; width: 500px; }
+        .artwork:nth-child(15) { left: 25%; top: 322vh; width: 480px; }
+        .artwork:nth-child(16) { left: 6%; top: 355vh; width: 520px; }
+        .artwork:nth-child(17) { left: 48%; top: 375vh; width: 500px; }
+        .artwork:nth-child(18) { left: 18%; top: 408vh; width: 480px; }
+        .artwork:nth-child(19) { left: 55%; top: 435vh; width: 520px; }
+        .artwork:nth-child(20) { left: 4%; top: 465vh; width: 500px; }
+        .artwork:nth-child(21) { left: 38%; top: 495vh; width: 480px; }
+        .artwork:nth-child(22) { left: 12%; top: 528vh; width: 520px; }
+        .artwork:nth-child(23) { left: 52%; top: 555vh; width: 500px; }
 
         @media (max-width: 900px) {
-            .canvas { min-height: 400vh; }
+            .canvas { min-height: 900vh; }
 
             .artwork {
-                width: 65vw !important;
+                width: 85vw !important;
                 left: 50% !important;
-                right: auto !important;
                 transform: translateX(-50%);
             }
 
@@ -314,24 +487,47 @@
                 transform: translateX(-50%) scale(1.02);
             }
 
-            .artwork:nth-child(1) { top: 5vh; }
-            .artwork:nth-child(2) { top: 35vh; }
-            .artwork:nth-child(3) { top: 65vh; }
-            .artwork:nth-child(4) { top: 95vh; }
-            .artwork:nth-child(5) { top: 125vh; }
-            .artwork:nth-child(6) { top: 155vh; }
-            .artwork:nth-child(7) { top: 185vh; }
-            .artwork:nth-child(8) { top: 215vh; }
-            .artwork:nth-child(9) { top: 245vh; }
-            .artwork:nth-child(10) { top: 275vh; }
-            .artwork:nth-child(11) { top: 305vh; }
-            .artwork:nth-child(12) { top: 335vh; }
+            .artwork:nth-child(1) { top: 2vh; }
+            .artwork:nth-child(2) { top: 38vh; }
+            .artwork:nth-child(3) { top: 74vh; }
+            .artwork:nth-child(4) { top: 110vh; }
+            .artwork:nth-child(5) { top: 146vh; }
+            .artwork:nth-child(6) { top: 182vh; }
+            .artwork:nth-child(7) { top: 218vh; }
+            .artwork:nth-child(8) { top: 254vh; }
+            .artwork:nth-child(9) { top: 290vh; }
+            .artwork:nth-child(10) { top: 326vh; }
+            .artwork:nth-child(11) { top: 362vh; }
+            .artwork:nth-child(12) { top: 398vh; }
+            .artwork:nth-child(13) { top: 434vh; }
+            .artwork:nth-child(14) { top: 470vh; }
+            .artwork:nth-child(15) { top: 506vh; }
+            .artwork:nth-child(16) { top: 542vh; }
+            .artwork:nth-child(17) { top: 578vh; }
+            .artwork:nth-child(18) { top: 614vh; }
+            .artwork:nth-child(19) { top: 650vh; }
+            .artwork:nth-child(20) { top: 686vh; }
+            .artwork:nth-child(21) { top: 722vh; }
+            .artwork:nth-child(22) { top: 758vh; }
+            .artwork:nth-child(23) { top: 794vh; }
 
             .sticky-title { font-size: 2.5rem; }
-            .tag-bar { bottom: 16px; padding: 6px 10px; }
+            .filter-button { bottom: 16px; padding: 12px 20px; font-size: 0.85rem; }
+            .filter-menu {
+                bottom: 16px;
+                padding: 16px 20px;
+                flex-direction: column;
+                gap: 20px;
+                max-width: 90vw;
+            }
+            .showcase-item { width: 340px; }
+            .showcase-scroll { gap: 28px; padding: 0 5vw; }
 
-            .showcase-item { width: 300px; }
-            .showcase-scroll { gap: 24px; padding: 0 5vw; }
+            .detail-content { max-width: 95vw; }
+            .detail-content .artwork-image video,
+            .detail-content .artwork-image img {
+                max-width: 95vw;
+            }
         }
     </style>
 </head>
@@ -341,12 +537,33 @@
         <span class="close">✕</span>
     </div>
 
-    <div class="tag-bar">
-        <span class="tag-bar-label">Filter:</span>
-        <span class="tag tag-draft" data-tag="draft">Draft</span>
-        <span class="tag tag-ready" data-tag="ready">Ready</span>
-        <span class="tag tag-licensed" data-tag="licensed">Licensed</span>
-        <span class="tag tag-custom" data-tag="custom">Custom</span>
+    <button class="filter-button">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+        </svg>
+        Filter
+    </button>
+
+    <div class="filter-menu">
+        <button class="filter-menu-close">✕</button>
+        <div class="filter-section">
+            <span class="filter-section-title">Artists</span>
+            <div class="filter-options filter-artists">
+                <div class="filter-option" data-artist="pol-sola">Pol Sola</div>
+                <div class="filter-option" data-artist="anoukia-perrey">Anoukia Perrey</div>
+                <div class="filter-option" data-artist="jer-bosmans">Jer Bosmans</div>
+                <div class="filter-option" data-artist="mario-carrillo">Mario Carrillo</div>
+                <div class="filter-option" data-artist="olivia-pedigo">Olivia Pedigo</div>
+            </div>
+        </div>
+        <div class="filter-section">
+            <span class="filter-section-title">Status</span>
+            <div class="filter-options filter-tags">
+                <div class="filter-option" data-tag="draft"><span class="tag tag-draft">Draft</span></div>
+                <div class="filter-option" data-tag="ready"><span class="tag tag-ready">Ready</span></div>
+                <div class="filter-option" data-tag="licensed"><span class="tag tag-licensed">Licensed</span></div>
+            </div>
+        </div>
     </div>
 
     <h1 class="sticky-title">Collabs</h1>
@@ -355,23 +572,57 @@
         <div class="showcase-scroll"></div>
     </div>
 
+    <div class="detail-overlay">
+        <div class="detail-content"></div>
+    </div>
+
     <div class="canvas">
-        <article class="artwork" data-artist="pol-sola" data-tag="ready">
+        <!-- Pol Sola - Licensed -->
+        <article class="artwork" data-artist="pol-sola" data-tag="licensed">
             <div class="artwork-image">
-                <div class="placeholder gradient-1"></div>
+                <video src="assets/pol-sola/01_LOGO-Orbits_H264-Low.mp4" autoplay loop muted playsinline></video>
             </div>
             <div class="artwork-info">
                 <div class="info-left">
                     <span class="artist-name">Pol Sola</span>
-                    <span class="tag tag-ready">Ready</span>
+                    <span class="tag tag-licensed">Licensed</span>
                 </div>
-                <span class="artwork-title">Artwork I</span>
+                <span class="artwork-title">Logo Orbits</span>
             </div>
         </article>
 
+        <!-- Anoukia Perrey - Ready -->
+        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready">
+            <div class="artwork-image">
+                <video src="assets/anoukia-perrey/00.mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Anoukia Perrey</span>
+                    <span class="tag tag-ready">Ready</span>
+                </div>
+                <span class="artwork-title">Artwork 00</span>
+            </div>
+        </article>
+
+        <!-- Jer Bosmans - Licensed -->
+        <article class="artwork" data-artist="jer-bosmans" data-tag="licensed">
+            <div class="artwork-image">
+                <img src="assets/jer-bosmans/Wabi_Artwork_License_1.png" alt="Jer Bosmans artwork">
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Jer Bosmans</span>
+                    <span class="tag tag-licensed">Licensed</span>
+                </div>
+                <span class="artwork-title">License 1</span>
+            </div>
+        </article>
+
+        <!-- Pol Sola - Licensed -->
         <article class="artwork" data-artist="pol-sola" data-tag="licensed">
             <div class="artwork-image">
-                <div class="placeholder gradient-2"></div>
+                <video src="assets/pol-sola/04_ESFERA_H264-Low.mp4" autoplay loop muted playsinline></video>
             </div>
             <div class="artwork-info">
                 <div class="info-left">
@@ -382,133 +633,269 @@
             </div>
         </article>
 
-        <article class="artwork" data-artist="anoukia-perrey" data-tag="draft">
-            <div class="artwork-image">
-                <div class="placeholder gradient-3"></div>
-            </div>
-            <div class="artwork-info">
-                <div class="info-left">
-                    <span class="artist-name">Anoukia Perrey</span>
-                    <span class="tag tag-draft">Draft</span>
-                </div>
-                <span class="artwork-title">Artwork I</span>
-            </div>
-        </article>
-
-        <article class="artwork" data-artist="olivia-pedigo" data-tag="custom">
-            <div class="artwork-image">
-                <div class="placeholder gradient-4"></div>
-            </div>
-            <div class="artwork-info">
-                <div class="info-left">
-                    <span class="artist-name">Olivia Pedigo</span>
-                    <span class="tag tag-custom">Custom</span>
-                </div>
-                <span class="artwork-title">Artwork I</span>
-            </div>
-        </article>
-
-        <article class="artwork" data-artist="jason-ting" data-tag="ready">
-            <div class="artwork-image">
-                <div class="placeholder gradient-5"></div>
-            </div>
-            <div class="artwork-info">
-                <div class="info-left">
-                    <span class="artist-name">Jason Ting</span>
-                    <span class="tag tag-ready">Ready</span>
-                </div>
-                <span class="artwork-title">Artwork I</span>
-            </div>
-        </article>
-
-        <article class="artwork" data-artist="loremdeloop" data-tag="licensed">
-            <div class="artwork-image">
-                <div class="placeholder gradient-6"></div>
-            </div>
-            <div class="artwork-info">
-                <div class="info-left">
-                    <span class="artist-name">Loremdeloop</span>
-                    <span class="tag tag-licensed">Licensed</span>
-                </div>
-                <span class="artwork-title">Artwork I</span>
-            </div>
-        </article>
-
+        <!-- Mario Carrillo - Draft -->
         <article class="artwork" data-artist="mario-carrillo" data-tag="draft">
             <div class="artwork-image">
-                <div class="placeholder gradient-7"></div>
+                <video src="assets/mario-carrillo/T1%2001.mp4" autoplay loop muted playsinline></video>
             </div>
             <div class="artwork-info">
                 <div class="info-left">
                     <span class="artist-name">Mario Carrillo</span>
                     <span class="tag tag-draft">Draft</span>
                 </div>
-                <span class="artwork-title">Artwork I</span>
+                <span class="artwork-title">Tier 1 - 01</span>
             </div>
         </article>
 
-        <article class="artwork" data-artist="rafaela-mascaro" data-tag="ready">
-            <div class="artwork-image">
-                <div class="placeholder gradient-8"></div>
-            </div>
-            <div class="artwork-info">
-                <div class="info-left">
-                    <span class="artist-name">Rafaela Mascaro</span>
-                    <span class="tag tag-ready">Ready</span>
-                </div>
-                <span class="artwork-title">Artwork I</span>
-            </div>
-        </article>
-
-        <article class="artwork" data-artist="jer-bosmans" data-tag="custom">
-            <div class="artwork-image">
-                <div class="placeholder gradient-9"></div>
-            </div>
-            <div class="artwork-info">
-                <div class="info-left">
-                    <span class="artist-name">Jer Bosmans</span>
-                    <span class="tag tag-custom">Custom</span>
-                </div>
-                <span class="artwork-title">Artwork I</span>
-            </div>
-        </article>
-
+        <!-- Anoukia Perrey - Ready -->
         <article class="artwork" data-artist="anoukia-perrey" data-tag="ready">
             <div class="artwork-image">
-                <div class="placeholder gradient-10"></div>
+                <video src="assets/anoukia-perrey/02.mp4" autoplay loop muted playsinline></video>
             </div>
             <div class="artwork-info">
                 <div class="info-left">
                     <span class="artist-name">Anoukia Perrey</span>
                     <span class="tag tag-ready">Ready</span>
                 </div>
-                <span class="artwork-title">Artwork II</span>
+                <span class="artwork-title">Artwork 02</span>
             </div>
         </article>
 
-        <article class="artwork" data-artist="jason-ting" data-tag="licensed">
+        <!-- Jer Bosmans - Licensed -->
+        <article class="artwork" data-artist="jer-bosmans" data-tag="licensed">
             <div class="artwork-image">
-                <div class="placeholder gradient-11"></div>
+                <img src="assets/jer-bosmans/Wabi_Artwork_License_3_A.png" alt="Jer Bosmans artwork">
             </div>
             <div class="artwork-info">
                 <div class="info-left">
-                    <span class="artist-name">Jason Ting</span>
+                    <span class="artist-name">Jer Bosmans</span>
                     <span class="tag tag-licensed">Licensed</span>
                 </div>
-                <span class="artwork-title">Artwork II</span>
+                <span class="artwork-title">License 3A</span>
             </div>
         </article>
 
-        <article class="artwork" data-artist="loremdeloop" data-tag="draft">
+        <!-- Pol Sola - Licensed -->
+        <article class="artwork" data-artist="pol-sola" data-tag="licensed">
             <div class="artwork-image">
-                <div class="placeholder gradient-12"></div>
+                <video src="assets/pol-sola/02_SUNSET_H264-Low.mp4" autoplay loop muted playsinline></video>
             </div>
             <div class="artwork-info">
                 <div class="info-left">
-                    <span class="artist-name">Loremdeloop</span>
+                    <span class="artist-name">Pol Sola</span>
+                    <span class="tag tag-licensed">Licensed</span>
+                </div>
+                <span class="artwork-title">Sunset</span>
+            </div>
+        </article>
+
+        <!-- Olivia Pedigo - Draft -->
+        <article class="artwork" data-artist="olivia-pedigo" data-tag="draft">
+            <div class="artwork-image">
+                <video src="assets/olivia-pedigo/wabi-animation-1-27%20(1).mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Olivia Pedigo</span>
                     <span class="tag tag-draft">Draft</span>
                 </div>
-                <span class="artwork-title">Artwork II</span>
+                <span class="artwork-title">Animation 1</span>
+            </div>
+        </article>
+
+        <!-- Anoukia Perrey - Ready -->
+        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready">
+            <div class="artwork-image">
+                <video src="assets/anoukia-perrey/05.mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Anoukia Perrey</span>
+                    <span class="tag tag-ready">Ready</span>
+                </div>
+                <span class="artwork-title">Artwork 05</span>
+            </div>
+        </article>
+
+        <!-- Mario Carrillo - Draft -->
+        <article class="artwork" data-artist="mario-carrillo" data-tag="draft">
+            <div class="artwork-image">
+                <video src="assets/mario-carrillo/T1%2002.mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Mario Carrillo</span>
+                    <span class="tag tag-draft">Draft</span>
+                </div>
+                <span class="artwork-title">Tier 1 - 02</span>
+            </div>
+        </article>
+
+        <!-- Jer Bosmans - Licensed -->
+        <article class="artwork" data-artist="jer-bosmans" data-tag="licensed">
+            <div class="artwork-image">
+                <img src="assets/jer-bosmans/Wabi_Artwork_License_4.png" alt="Jer Bosmans artwork">
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Jer Bosmans</span>
+                    <span class="tag tag-licensed">Licensed</span>
+                </div>
+                <span class="artwork-title">License 4</span>
+            </div>
+        </article>
+
+        <!-- Pol Sola - Licensed -->
+        <article class="artwork" data-artist="pol-sola" data-tag="licensed">
+            <div class="artwork-image">
+                <video src="assets/pol-sola/03_RIPPLE-Color_H264-Low.mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Pol Sola</span>
+                    <span class="tag tag-licensed">Licensed</span>
+                </div>
+                <span class="artwork-title">Ripple Color</span>
+            </div>
+        </article>
+
+        <!-- Anoukia Perrey - Ready -->
+        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready">
+            <div class="artwork-image">
+                <video src="assets/anoukia-perrey/08.mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Anoukia Perrey</span>
+                    <span class="tag tag-ready">Ready</span>
+                </div>
+                <span class="artwork-title">Artwork 08</span>
+            </div>
+        </article>
+
+        <!-- Mario Carrillo - Draft -->
+        <article class="artwork" data-artist="mario-carrillo" data-tag="draft">
+            <div class="artwork-image">
+                <video src="assets/mario-carrillo/T1%2003.mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Mario Carrillo</span>
+                    <span class="tag tag-draft">Draft</span>
+                </div>
+                <span class="artwork-title">Tier 1 - 03</span>
+            </div>
+        </article>
+
+        <!-- Jer Bosmans - Licensed -->
+        <article class="artwork" data-artist="jer-bosmans" data-tag="licensed">
+            <div class="artwork-image">
+                <img src="assets/jer-bosmans/Wabi_Artwork_License_3_B.png" alt="Jer Bosmans artwork">
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Jer Bosmans</span>
+                    <span class="tag tag-licensed">Licensed</span>
+                </div>
+                <span class="artwork-title">License 3B</span>
+            </div>
+        </article>
+
+        <!-- Pol Sola - Licensed -->
+        <article class="artwork" data-artist="pol-sola" data-tag="licensed">
+            <div class="artwork-image">
+                <video src="assets/pol-sola/05_TRAILS_H264-Low.mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Pol Sola</span>
+                    <span class="tag tag-licensed">Licensed</span>
+                </div>
+                <span class="artwork-title">Trails</span>
+            </div>
+        </article>
+
+        <!-- Anoukia Perrey - Ready -->
+        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready">
+            <div class="artwork-image">
+                <video src="assets/anoukia-perrey/09.mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Anoukia Perrey</span>
+                    <span class="tag tag-ready">Ready</span>
+                </div>
+                <span class="artwork-title">Artwork 09</span>
+            </div>
+        </article>
+
+        <!-- Mario Carrillo - Draft -->
+        <article class="artwork" data-artist="mario-carrillo" data-tag="draft">
+            <div class="artwork-image">
+                <video src="assets/mario-carrillo/T1%2004.mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Mario Carrillo</span>
+                    <span class="tag tag-draft">Draft</span>
+                </div>
+                <span class="artwork-title">Tier 1 - 04</span>
+            </div>
+        </article>
+
+        <!-- Pol Sola - Licensed -->
+        <article class="artwork" data-artist="pol-sola" data-tag="licensed">
+            <div class="artwork-image">
+                <video src="assets/pol-sola/06_METABALLS-ColorBack_H264-Low.mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Pol Sola</span>
+                    <span class="tag tag-licensed">Licensed</span>
+                </div>
+                <span class="artwork-title">Metaballs</span>
+            </div>
+        </article>
+
+        <!-- Anoukia Perrey - Ready -->
+        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready">
+            <div class="artwork-image">
+                <video src="assets/anoukia-perrey/10.mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Anoukia Perrey</span>
+                    <span class="tag tag-ready">Ready</span>
+                </div>
+                <span class="artwork-title">Artwork 10</span>
+            </div>
+        </article>
+
+        <!-- Jer Bosmans - Licensed -->
+        <article class="artwork" data-artist="jer-bosmans" data-tag="licensed">
+            <div class="artwork-image">
+                <img src="assets/jer-bosmans/jer-cropped.png" alt="Jer Bosmans artwork">
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Jer Bosmans</span>
+                    <span class="tag tag-licensed">Licensed</span>
+                </div>
+                <span class="artwork-title">Cropped</span>
+            </div>
+        </article>
+
+        <!-- Anoukia Perrey - Ready -->
+        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready">
+            <div class="artwork-image">
+                <video src="assets/anoukia-perrey/13.mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Anoukia Perrey</span>
+                    <span class="tag tag-ready">Ready</span>
+                </div>
+                <span class="artwork-title">Artwork 13</span>
             </div>
         </article>
     </div>
@@ -518,12 +905,72 @@
         const filterBar = document.querySelector('.filter-bar');
         const filterName = document.querySelector('.filter-name');
         const closeBtn = document.querySelector('.close');
-        const tagBarTags = document.querySelectorAll('.tag-bar .tag');
+        const filterButton = document.querySelector('.filter-button');
+        const filterMenu = document.querySelector('.filter-menu');
+        const filterMenuClose = document.querySelector('.filter-menu-close');
+        const filterArtists = document.querySelectorAll('.filter-artists .filter-option');
+        const filterTags = document.querySelectorAll('.filter-tags .filter-option');
         const showcaseOverlay = document.querySelector('.showcase-overlay');
         const showcaseScroll = document.querySelector('.showcase-scroll');
+        const detailOverlay = document.querySelector('.detail-overlay');
+        const detailContent = document.querySelector('.detail-content');
 
         let currentFilter = { type: null, value: null };
         let isShowcaseActive = false;
+        let isDetailActive = false;
+        let isFilterMenuOpen = false;
+
+        // Filter button
+        filterButton.addEventListener('click', () => {
+            isFilterMenuOpen = true;
+            document.body.classList.add('filter-menu-open');
+        });
+
+        filterMenuClose.addEventListener('click', () => {
+            isFilterMenuOpen = false;
+            document.body.classList.remove('filter-menu-open');
+        });
+
+        // Click outside filter menu to close
+        document.addEventListener('click', (e) => {
+            if (isFilterMenuOpen && !filterMenu.contains(e.target) && !filterButton.contains(e.target)) {
+                isFilterMenuOpen = false;
+                document.body.classList.remove('filter-menu-open');
+            }
+        });
+
+        // Filter by artist from menu
+        filterArtists.forEach(option => {
+            option.addEventListener('click', () => {
+                const artistId = option.dataset.artist;
+                const displayName = option.textContent;
+                isFilterMenuOpen = false;
+                document.body.classList.remove('filter-menu-open');
+                openShowcase(artistId, displayName);
+            });
+        });
+
+        // Filter by tag from menu
+        filterTags.forEach(option => {
+            option.addEventListener('click', () => {
+                const tagValue = option.dataset.tag;
+                const displayName = option.querySelector('.tag').textContent;
+                isFilterMenuOpen = false;
+                document.body.classList.remove('filter-menu-open');
+                applyTagFilter(tagValue, displayName);
+            });
+        });
+
+        // Click artwork image to open detail view
+        document.addEventListener('click', (e) => {
+            const artworkImage = e.target.closest('.artwork-image');
+            if (artworkImage && artworkImage.closest('.canvas .artwork')) {
+                e.stopPropagation();
+                const artwork = artworkImage.closest('.artwork');
+                openDetail(artwork);
+                return;
+            }
+        });
 
         // Click artist name to open showcase
         document.addEventListener('click', (e) => {
@@ -547,40 +994,72 @@
             }
         });
 
-        // Click tag in bottom bar to filter
-        tagBarTags.forEach(tag => {
-            tag.addEventListener('click', () => {
-                const tagValue = tag.dataset.tag;
-                const displayName = tag.textContent;
-
-                if (currentFilter.type === 'tag' && currentFilter.value === tagValue) {
-                    clearFilter();
-                } else {
-                    applyTagFilter(tagValue, displayName);
-                }
-            });
-        });
-
         closeBtn.addEventListener('click', clearFilter);
 
-        // Click outside showcase to close
+        // Click outside overlays to close
         showcaseOverlay.addEventListener('click', (e) => {
             if (e.target === showcaseOverlay) {
                 clearFilter();
             }
         });
 
+        detailOverlay.addEventListener('click', (e) => {
+            if (e.target === detailOverlay) {
+                clearFilter();
+            }
+        });
+
+        function openDetail(artwork) {
+            isDetailActive = true;
+            currentFilter = { type: 'detail', value: artwork };
+            document.body.classList.add('detail-active');
+            document.body.classList.remove('filtered', 'showcase-active');
+
+            artwork.classList.add('in-detail');
+
+            const artworkTitle = artwork.querySelector('.artwork-title')?.textContent || 'Artwork';
+            filterName.textContent = artworkTitle;
+
+            detailContent.innerHTML = '';
+
+            const clone = artwork.cloneNode(true);
+            clone.classList.remove('artwork', 'in-detail');
+
+            // Add controls to video
+            const video = clone.querySelector('video');
+            if (video) {
+                video.setAttribute('controls', '');
+                video.removeAttribute('muted');
+                video.currentTime = 0;
+                video.loop = true;
+            }
+
+            // Add the content
+            const imageWrapper = clone.querySelector('.artwork-image');
+            const infoWrapper = clone.querySelector('.artwork-info');
+
+            if (imageWrapper) detailContent.appendChild(imageWrapper);
+            if (infoWrapper) detailContent.appendChild(infoWrapper);
+
+            setTimeout(() => {
+                detailContent.classList.add('visible');
+                if (video) video.play();
+            }, 50);
+        }
+
         function openShowcase(artistId, displayName) {
+            if (isDetailActive) {
+                clearDetail();
+            }
+
             isShowcaseActive = true;
             currentFilter = { type: 'artist', value: artistId };
             document.body.classList.add('showcase-active');
-            document.body.classList.remove('filtered');
+            document.body.classList.remove('filtered', 'detail-active');
             filterName.textContent = displayName;
 
-            // Clear previous showcase
             showcaseScroll.innerHTML = '';
 
-            // Find matching artworks and mark them
             const matchingArtworks = [];
             artworks.forEach(artwork => {
                 if (artwork.dataset.artist === artistId) {
@@ -591,32 +1070,31 @@
                 }
             });
 
-            // Create showcase items with staggered animation
             matchingArtworks.forEach((artwork, index) => {
                 const clone = artwork.cloneNode(true);
                 clone.classList.remove('artwork', 'in-showcase');
                 clone.classList.add('showcase-item');
-                clone.style.cssText = '';
-
-                // Remove positional styles
                 clone.removeAttribute('style');
+
+                const video = clone.querySelector('video');
+                if (video) {
+                    video.currentTime = 0;
+                    video.play();
+                }
 
                 showcaseScroll.appendChild(clone);
 
-                // Stagger the reveal animation
                 setTimeout(() => {
                     clone.classList.add('visible');
                 }, 100 + (index * 80));
             });
 
-            // Scroll to start
             showcaseScroll.scrollLeft = 0;
         }
 
         function applyTagFilter(tagValue, displayName) {
-            if (isShowcaseActive) {
-                clearShowcase();
-            }
+            if (isShowcaseActive) clearShowcase();
+            if (isDetailActive) clearDetail();
 
             currentFilter = { type: 'tag', value: tagValue };
             document.body.classList.add('filtered');
@@ -635,6 +1113,24 @@
             });
         }
 
+        function clearDetail() {
+            isDetailActive = false;
+            document.body.classList.remove('detail-active');
+            detailContent.classList.remove('visible');
+
+            artworks.forEach(artwork => {
+                artwork.classList.remove('in-detail');
+            });
+
+            // Pause any video in detail
+            const video = detailContent.querySelector('video');
+            if (video) video.pause();
+
+            setTimeout(() => {
+                detailContent.innerHTML = '';
+            }, 400);
+        }
+
         function clearShowcase() {
             isShowcaseActive = false;
             document.body.classList.remove('showcase-active');
@@ -642,7 +1138,6 @@
                 artwork.classList.remove('in-showcase');
             });
 
-            // Fade out showcase items
             const items = showcaseScroll.querySelectorAll('.showcase-item');
             items.forEach(item => item.classList.remove('visible'));
 
@@ -652,9 +1147,8 @@
         }
 
         function clearFilter() {
-            if (isShowcaseActive) {
-                clearShowcase();
-            }
+            if (isShowcaseActive) clearShowcase();
+            if (isDetailActive) clearDetail();
 
             currentFilter = { type: null, value: null };
             document.body.classList.remove('filtered');
@@ -664,18 +1158,32 @@
             });
         }
 
-        // ESC to clear filter
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') clearFilter();
         });
 
-        // Horizontal scroll with mouse wheel in showcase
         showcaseScroll.addEventListener('wheel', (e) => {
             if (isShowcaseActive) {
                 e.preventDefault();
                 showcaseScroll.scrollLeft += e.deltaY;
             }
         }, { passive: false });
+
+        // Pause videos when not in viewport for performance
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const video = entry.target.querySelector('video');
+                if (video) {
+                    if (entry.isIntersecting) {
+                        video.play();
+                    } else {
+                        video.pause();
+                    }
+                }
+            });
+        }, { threshold: 0.1 });
+
+        artworks.forEach(artwork => observer.observe(artwork));
     </script>
 </body>
 </html>
