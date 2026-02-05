@@ -61,15 +61,15 @@
             filter: blur(10px);
         }
 
-        /* Scroll-based blur for sticky title */
+        /* Scroll-based blur for sticky title - fade out completely on scroll */
         .sticky-title.scrolled {
-            filter: blur(8px);
-            opacity: 0.3;
+            filter: blur(20px);
+            opacity: 0;
         }
 
         .canvas {
             position: relative;
-            min-height: 2200vh;
+            min-height: 2550vh;
             padding: 10vh 0 20vh;
             transition: filter 0.4s ease;
         }
@@ -274,7 +274,7 @@
             position: fixed;
             bottom: 40px;
             right: 40px;
-            padding: 14px 28px;
+            padding: 16px 28px;
             background: rgba(255, 255, 255, 0.65);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
@@ -282,8 +282,8 @@
             border-radius: 100px;
             font-family: inherit;
             font-size: 1rem;
-            font-weight: 500;
-            color: inherit;
+            font-weight: 450;
+            color: #000;
             text-align: center;
             cursor: pointer;
             box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
@@ -391,10 +391,12 @@
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
             border: 1px solid rgba(255, 255, 255, 0.4);
-            padding: 14px 28px;
+            padding: 16px 28px;
             border-radius: 100px;
+            font-family: inherit;
             font-size: 1rem;
-            font-weight: 500;
+            font-weight: 450;
+            color: #000;
             cursor: pointer;
             z-index: 60;
             display: flex;
@@ -644,40 +646,39 @@
             padding: 5px 10px;
         }
 
-        /* Artwork positions - responsive sizing with no overlap */
+        /* Artwork positions - 85vh spacing, alternating left/center/right to prevent overlap */
         .artwork { width: clamp(320px, 32vw, 650px); }
 
-        /* First 2 stay on sides to avoid overlapping centered "Collabs" text */
+        /* Pattern: left -> right -> center, with 85vh between each */
         .artwork:nth-child(1) { left: 8%; top: 5vh; width: clamp(300px, 30vw, 600px); }
-        .artwork:nth-child(2) { right: 8%; left: auto; top: 70vh; width: clamp(320px, 32vw, 625px); }
-        /* After scrolling past hero, varied positions */
-        .artwork:nth-child(3) { left: 50%; transform: translateX(-50%); top: 140vh; width: clamp(340px, 34vw, 650px); }
-        .artwork:nth-child(4) { left: 6%; top: 215vh; width: clamp(300px, 30vw, 600px); }
-        .artwork:nth-child(5) { right: 10%; left: auto; top: 290vh; width: clamp(320px, 32vw, 625px); }
-        .artwork:nth-child(6) { left: 50%; transform: translateX(-50%); top: 365vh; width: clamp(280px, 28vw, 570px); }
-        .artwork:nth-child(7) { right: 6%; left: auto; top: 440vh; width: clamp(340px, 34vw, 650px); }
-        .artwork:nth-child(8) { left: 12%; top: 515vh; width: clamp(320px, 32vw, 625px); }
-        .artwork:nth-child(9) { left: 50%; transform: translateX(-50%); top: 590vh; width: clamp(300px, 30vw, 600px); }
-        .artwork:nth-child(10) { left: 8%; top: 665vh; width: clamp(340px, 34vw, 650px); }
-        .artwork:nth-child(11) { right: 8%; left: auto; top: 740vh; width: clamp(280px, 28vw, 570px); }
-        .artwork:nth-child(12) { left: 50%; transform: translateX(-50%); top: 815vh; width: clamp(320px, 32vw, 625px); }
-        .artwork:nth-child(13) { right: 10%; left: auto; top: 890vh; width: clamp(300px, 30vw, 600px); }
-        .artwork:nth-child(14) { left: 6%; top: 965vh; width: clamp(340px, 34vw, 650px); }
-        .artwork:nth-child(15) { left: 50%; transform: translateX(-50%); top: 1040vh; width: clamp(280px, 28vw, 570px); }
-        .artwork:nth-child(16) { right: 6%; left: auto; top: 1115vh; width: clamp(320px, 32vw, 625px); }
-        .artwork:nth-child(17) { left: 10%; top: 1190vh; width: clamp(300px, 30vw, 600px); }
-        .artwork:nth-child(18) { left: 50%; transform: translateX(-50%); top: 1265vh; width: clamp(340px, 34vw, 650px); }
-        .artwork:nth-child(19) { right: 8%; left: auto; top: 1340vh; width: clamp(280px, 28vw, 570px); }
-        .artwork:nth-child(20) { left: 8%; top: 1415vh; width: clamp(320px, 32vw, 625px); }
-        .artwork:nth-child(21) { left: 50%; transform: translateX(-50%); top: 1490vh; width: clamp(300px, 30vw, 600px); }
-        .artwork:nth-child(22) { right: 10%; left: auto; top: 1565vh; width: clamp(340px, 34vw, 650px); }
-        .artwork:nth-child(23) { left: 6%; top: 1640vh; width: clamp(280px, 28vw, 570px); }
-        .artwork:nth-child(24) { left: 50%; transform: translateX(-50%); top: 1715vh; width: clamp(320px, 32vw, 625px); }
-        .artwork:nth-child(25) { right: 8%; left: auto; top: 1790vh; width: clamp(300px, 30vw, 600px); }
-        .artwork:nth-child(26) { left: 10%; top: 1865vh; width: clamp(340px, 34vw, 650px); }
-        .artwork:nth-child(27) { left: 50%; transform: translateX(-50%); top: 1940vh; width: clamp(280px, 28vw, 570px); }
-        .artwork:nth-child(28) { right: 6%; left: auto; top: 2015vh; width: clamp(320px, 32vw, 625px); }
-        .artwork:nth-child(29) { left: 8%; top: 2090vh; width: clamp(300px, 30vw, 600px); }
+        .artwork:nth-child(2) { right: 8%; left: auto; top: 90vh; width: clamp(320px, 32vw, 625px); }
+        .artwork:nth-child(3) { left: 50%; transform: translateX(-50%); top: 175vh; width: clamp(340px, 34vw, 650px); }
+        .artwork:nth-child(4) { left: 6%; top: 260vh; width: clamp(300px, 30vw, 600px); }
+        .artwork:nth-child(5) { right: 10%; left: auto; top: 345vh; width: clamp(320px, 32vw, 625px); }
+        .artwork:nth-child(6) { left: 50%; transform: translateX(-50%); top: 430vh; width: clamp(280px, 28vw, 570px); }
+        .artwork:nth-child(7) { right: 6%; left: auto; top: 515vh; width: clamp(340px, 34vw, 650px); }
+        .artwork:nth-child(8) { left: 12%; top: 600vh; width: clamp(320px, 32vw, 625px); }
+        .artwork:nth-child(9) { left: 50%; transform: translateX(-50%); top: 685vh; width: clamp(300px, 30vw, 600px); }
+        .artwork:nth-child(10) { left: 8%; top: 770vh; width: clamp(340px, 34vw, 650px); }
+        .artwork:nth-child(11) { right: 8%; left: auto; top: 855vh; width: clamp(280px, 28vw, 570px); }
+        .artwork:nth-child(12) { left: 50%; transform: translateX(-50%); top: 940vh; width: clamp(320px, 32vw, 625px); }
+        .artwork:nth-child(13) { right: 10%; left: auto; top: 1025vh; width: clamp(300px, 30vw, 600px); }
+        .artwork:nth-child(14) { left: 6%; top: 1110vh; width: clamp(340px, 34vw, 650px); }
+        .artwork:nth-child(15) { left: 50%; transform: translateX(-50%); top: 1195vh; width: clamp(280px, 28vw, 570px); }
+        .artwork:nth-child(16) { right: 6%; left: auto; top: 1280vh; width: clamp(320px, 32vw, 625px); }
+        .artwork:nth-child(17) { left: 10%; top: 1365vh; width: clamp(300px, 30vw, 600px); }
+        .artwork:nth-child(18) { left: 50%; transform: translateX(-50%); top: 1450vh; width: clamp(340px, 34vw, 650px); }
+        .artwork:nth-child(19) { right: 8%; left: auto; top: 1535vh; width: clamp(280px, 28vw, 570px); }
+        .artwork:nth-child(20) { left: 8%; top: 1620vh; width: clamp(320px, 32vw, 625px); }
+        .artwork:nth-child(21) { left: 50%; transform: translateX(-50%); top: 1705vh; width: clamp(300px, 30vw, 600px); }
+        .artwork:nth-child(22) { right: 10%; left: auto; top: 1790vh; width: clamp(340px, 34vw, 650px); }
+        .artwork:nth-child(23) { left: 6%; top: 1875vh; width: clamp(280px, 28vw, 570px); }
+        .artwork:nth-child(24) { left: 50%; transform: translateX(-50%); top: 1960vh; width: clamp(320px, 32vw, 625px); }
+        .artwork:nth-child(25) { right: 8%; left: auto; top: 2045vh; width: clamp(300px, 30vw, 600px); }
+        .artwork:nth-child(26) { left: 10%; top: 2130vh; width: clamp(340px, 34vw, 650px); }
+        .artwork:nth-child(27) { left: 50%; transform: translateX(-50%); top: 2215vh; width: clamp(280px, 28vw, 570px); }
+        .artwork:nth-child(28) { right: 6%; left: auto; top: 2300vh; width: clamp(320px, 32vw, 625px); }
+        .artwork:nth-child(29) { left: 8%; top: 2385vh; width: clamp(300px, 30vw, 600px); }
 
         /* Hover states for centered artworks to preserve translateX */
         .artwork:nth-child(3):hover,
@@ -693,48 +694,28 @@
         }
 
         @media (max-width: 900px) {
-            .canvas { min-height: 2200vh; }
+            /* Use flexbox layout for mobile */
+            .canvas {
+                min-height: auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 40px;
+                padding: 270px 0 100px;
+            }
 
             .artwork {
+                position: relative !important;
                 width: 85vw !important;
-                left: 50% !important;
+                left: auto !important;
                 right: auto !important;
-                transform: translateX(-50%);
+                top: auto !important;
+                transform: none !important;
             }
 
             .artwork:hover {
-                transform: translateX(-50%) scale(1.02);
+                transform: scale(1.02) !important;
             }
-
-            .artwork:nth-child(1) { top: 12vh; }
-            .artwork:nth-child(2) { top: 82vh; }
-            .artwork:nth-child(3) { top: 152vh; }
-            .artwork:nth-child(4) { top: 222vh; }
-            .artwork:nth-child(5) { top: 292vh; }
-            .artwork:nth-child(6) { top: 362vh; }
-            .artwork:nth-child(7) { top: 432vh; }
-            .artwork:nth-child(8) { top: 502vh; }
-            .artwork:nth-child(9) { top: 572vh; }
-            .artwork:nth-child(10) { top: 642vh; }
-            .artwork:nth-child(11) { top: 712vh; }
-            .artwork:nth-child(12) { top: 782vh; }
-            .artwork:nth-child(13) { top: 852vh; }
-            .artwork:nth-child(14) { top: 922vh; }
-            .artwork:nth-child(15) { top: 992vh; }
-            .artwork:nth-child(16) { top: 1062vh; }
-            .artwork:nth-child(17) { top: 1132vh; }
-            .artwork:nth-child(18) { top: 1202vh; }
-            .artwork:nth-child(19) { top: 1272vh; }
-            .artwork:nth-child(20) { top: 1342vh; }
-            .artwork:nth-child(21) { top: 1412vh; }
-            .artwork:nth-child(22) { top: 1482vh; }
-            .artwork:nth-child(23) { top: 1552vh; }
-            .artwork:nth-child(24) { top: 1622vh; }
-            .artwork:nth-child(25) { top: 1692vh; }
-            .artwork:nth-child(26) { top: 1762vh; }
-            .artwork:nth-child(27) { top: 1832vh; }
-            .artwork:nth-child(28) { top: 1902vh; }
-            .artwork:nth-child(29) { top: 1972vh; }
 
             /* Wabi logo scrolls away on mobile */
             .wabi-logo {
@@ -742,17 +723,52 @@
                 top: 24px;
             }
 
-            /* Sticky title at top on mobile - moved down 50px */
+            /* Wabi logo fades out completely on overlay views on mobile */
+            body.showcase-active .wabi-logo,
+            body.detail-active .wabi-logo {
+                opacity: 0;
+            }
+
+            /* Sticky title at top on mobile */
             .sticky-title {
                 position: absolute;
-                top: calc(3vh + 50px);
+                top: 170px;
                 left: 50%;
                 transform: translateX(-50%);
                 font-size: 2.5rem;
             }
 
-            /* First artwork moved down */
-            .artwork:nth-child(1) { top: calc(12vh + 50px); }
+            /* Close button in bottom middle on mobile for showcase/artist view */
+            .showcase-close {
+                top: auto;
+                bottom: 80px;
+                left: 50%;
+                right: auto;
+                transform: translateX(-50%);
+                color: #000;
+                font-size: 0.85rem;
+                padding: 12px 20px;
+            }
+
+            /* Download button mobile font size */
+            .detail-download-btn {
+                font-size: 0.85rem;
+                padding: 12px 20px;
+            }
+
+            /* On detail view (individual artwork), close and download buttons side by side below artwork */
+            body.detail-active .showcase-close {
+                bottom: 24px;
+                left: calc(50% - 70px);
+                transform: translateX(-50%);
+            }
+
+            body.detail-active .detail-download-btn {
+                bottom: 24px;
+                right: auto;
+                left: calc(50% + 70px);
+                transform: translateX(-50%);
+            }
 
             .filter-buttons { bottom: 16px; gap: 8px; }
             .filter-btn { padding: 12px 20px; font-size: 0.85rem; color: #000; }
@@ -805,11 +821,13 @@
                 overflow-y: visible;
                 height: auto;
                 width: 100%;
+                gap: 40px;
             }
 
             .showcase-item {
                 width: 85vw !important;
                 flex-shrink: 0;
+                margin: 0 !important;
             }
 
             .showcase-nav-container {
@@ -820,13 +838,6 @@
             .detail-content .artwork-image video,
             .detail-content .artwork-image img {
                 max-width: 95vw;
-            }
-
-            .detail-download-btn {
-                bottom: 24px;
-                right: 24px;
-                padding: 12px 20px;
-                font-size: 0.9rem;
             }
 
             /* Wabi logo 50% size on mobile */
@@ -840,9 +851,9 @@
                 transform: translateY(0) !important;
             }
 
-            /* 50% font size for artist name and artwork title on mobile */
+            /* Font sizes for artist name and artwork title on mobile */
             .artist-name {
-                font-size: 0.8rem !important;
+                font-size: 0.96rem !important;
             }
 
             .artwork-title {
