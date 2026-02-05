@@ -185,7 +185,7 @@
             pointer-events: auto;
         }
 
-        /* Artist header in showcase - fixed left, behind scroll */
+        /* Artist header in showcase - fixed left, clickable when not blurred */
         .artist-header {
             position: fixed;
             left: 0;
@@ -196,13 +196,14 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            z-index: 1;
+            z-index: 3;
             transition: filter 0.3s ease, opacity 0.3s ease;
         }
 
         .artist-header.blurred {
             filter: blur(8px);
             opacity: 0.3;
+            pointer-events: none;
         }
 
         .artist-header h2 {
@@ -288,9 +289,10 @@
         .showcase-nav {
             width: 52px;
             height: 52px;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
             border-radius: 50%;
             cursor: pointer;
             display: flex;
@@ -299,13 +301,13 @@
             font-size: 1.3rem;
             color: #333;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
         }
 
         .showcase-nav:hover {
-            background: #fff;
+            background: rgba(255, 255, 255, 0.75);
             transform: scale(1.08);
-            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
         }
 
         .showcase-nav:disabled {
@@ -322,10 +324,10 @@
             position: fixed;
             top: 24px;
             right: 24px;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
             padding: 14px 28px;
             border-radius: 100px;
             font-size: 1rem;
@@ -335,7 +337,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
             opacity: 0;
             pointer-events: none;
             transition: all 0.3s ease;
@@ -348,7 +350,7 @@
         }
 
         .showcase-close:hover {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.75);
             transform: scale(1.05);
         }
 
@@ -475,10 +477,10 @@
         }
 
         .filter-btn {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
             padding: 16px 28px;
             border-radius: 100px;
             font-size: 1rem;
@@ -489,9 +491,9 @@
         }
 
         .filter-btn:hover {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.75);
             transform: scale(1.05);
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
         }
 
         .filter-btn.active {
@@ -505,14 +507,14 @@
         .filter-menu {
             position: fixed;
             bottom: 90px;
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.55);
             backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.35);
             padding: 28px 36px;
             border-radius: 24px;
             z-index: 200;
-            box-shadow: 0 16px 60px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 16px 60px rgba(0, 0, 0, 0.1);
             opacity: 0;
             pointer-events: none;
             transform: translateY(20px) scale(0.9);
@@ -1131,6 +1133,8 @@
         let currentFilter = { type: null, value: null };
         let isShowcaseActive = false;
         let isDetailActive = false;
+        let detailNavigationList = []; // List of artworks for keyboard navigation
+        let detailCurrentIndex = 0; // Current index in navigation list
 
         // Status filter data
         const statusData = {
@@ -1294,6 +1298,10 @@
             currentDetailArtwork = artwork;
             currentFilter = { type: 'detail', value: artwork };
 
+            // Set up navigation list (all artworks from canvas)
+            detailNavigationList = Array.from(artworks);
+            detailCurrentIndex = detailNavigationList.indexOf(artwork);
+
             // Trigger blur
             document.body.classList.add('detail-active');
             document.body.classList.remove('filtered', 'showcase-active');
@@ -1311,7 +1319,10 @@
             if (video) {
                 video.setAttribute('controls', '');
                 video.removeAttribute('muted');
+                video.muted = false;
+                video.volume = 1;
                 video.loop = true;
+                video.currentTime = 0;
             }
 
             const imageWrapper = clone.querySelector('.artwork-image');
@@ -1325,12 +1336,21 @@
 
             detailContent.classList.add('visible');
 
-            if (video) video.play();
+            if (video) {
+                video.play().catch(() => {
+                    video.muted = true;
+                    video.play().then(() => { video.muted = false; });
+                });
+            }
         }
 
         function openDetailFromShowcase(showcaseItem) {
             isDetailActive = true;
             currentFilter = { type: 'detail-from-showcase', value: showcaseItem };
+
+            // Set up navigation list (showcase items)
+            detailNavigationList = Array.from(showcaseScroll.querySelectorAll('.showcase-item'));
+            detailCurrentIndex = detailNavigationList.indexOf(showcaseItem);
 
             // Keep showcase visible but blur it
             document.body.classList.add('detail-active');
@@ -1349,7 +1369,10 @@
             if (video) {
                 video.setAttribute('controls', '');
                 video.removeAttribute('muted');
+                video.muted = false;
+                video.volume = 1;
                 video.loop = true;
+                video.currentTime = 0;
             }
 
             const imageWrapper = clone.querySelector('.artwork-image');
@@ -1363,7 +1386,12 @@
 
             detailContent.classList.add('visible');
 
-            if (video) video.play();
+            if (video) {
+                video.play().catch(() => {
+                    video.muted = true;
+                    video.play().then(() => { video.muted = false; });
+                });
+            }
         }
 
         function openShowcase(artistId, displayName) {
@@ -1561,7 +1589,63 @@
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') clearFilter();
+
+            // Arrow key navigation in detail view
+            if (isDetailActive && detailNavigationList.length > 0) {
+                if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    navigateDetail(1);
+                } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    navigateDetail(-1);
+                }
+            }
         });
+
+        function navigateDetail(direction) {
+            const newIndex = detailCurrentIndex + direction;
+            if (newIndex < 0 || newIndex >= detailNavigationList.length) return;
+
+            detailCurrentIndex = newIndex;
+            const item = detailNavigationList[newIndex];
+
+            // Pause current video
+            const currentVideo = detailContent.querySelector('video');
+            if (currentVideo) currentVideo.pause();
+
+            // Update detail content
+            detailContent.innerHTML = '';
+            detailContent.dataset.artist = item.dataset.artist;
+
+            const clone = item.cloneNode(true);
+            clone.classList.remove('artwork', 'showcase-item', 'visible');
+
+            const video = clone.querySelector('video');
+            if (video) {
+                video.setAttribute('controls', '');
+                video.removeAttribute('muted');
+                video.muted = false;
+                video.volume = 1;
+                video.loop = true;
+                video.currentTime = 0;
+            }
+
+            const imageWrapper = clone.querySelector('.artwork-image');
+            const infoWrapper = clone.querySelector('.artwork-info');
+
+            if (imageWrapper) {
+                imageWrapper.removeAttribute('style');
+                detailContent.appendChild(imageWrapper);
+            }
+            if (infoWrapper) detailContent.appendChild(infoWrapper);
+
+            if (video) {
+                video.play().catch(() => {
+                    video.muted = true;
+                    video.play().then(() => { video.muted = false; });
+                });
+            }
+        }
 
         showcaseScroll.addEventListener('wheel', (e) => {
             if (isShowcaseActive) {
