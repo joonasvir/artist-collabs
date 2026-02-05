@@ -280,11 +280,12 @@
             -webkit-backdrop-filter: blur(24px);
             border: 1px solid rgba(255, 255, 255, 0.4);
             border-radius: 100px;
+            font-family: inherit;
             font-size: 1rem;
             font-weight: 500;
             color: inherit;
-            text-decoration: none;
             text-align: center;
+            cursor: pointer;
             box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
             z-index: 70;
             opacity: 0;
@@ -885,7 +886,7 @@
         <div class="detail-content"></div>
     </div>
 
-    <a class="detail-download-btn" href="#" download>Download</a>
+    <button class="detail-download-btn">Download</button>
 
     <div class="canvas">
         <!-- Pol Sola - Ready -->
@@ -1326,6 +1327,28 @@
         const detailArtistInfo = document.querySelector('.detail-artist-info');
         const detailContent = document.querySelector('.detail-content');
         const detailDownloadBtn = document.querySelector('.detail-download-btn');
+        let currentMediaUrl = null;
+
+        // Download button click handler
+        detailDownloadBtn.addEventListener('click', async () => {
+            if (!currentMediaUrl) return;
+
+            try {
+                const response = await fetch(currentMediaUrl);
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = currentMediaUrl.split('/').pop().split('?')[0];
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            } catch (err) {
+                // Fallback: open in new tab
+                window.open(currentMediaUrl, '_blank');
+            }
+        });
 
         // Showcase navigation
         showcasePrev.addEventListener('click', () => {
@@ -1613,7 +1636,7 @@
             // Set download button href
             const mediaEl = video || clone.querySelector('img');
             if (mediaEl) {
-                detailDownloadBtn.href = mediaEl.src;
+                currentMediaUrl = mediaEl.src;
             }
 
             detailContent.classList.add('visible');
@@ -1669,7 +1692,7 @@
             // Set download button href
             const mediaEl = video || clone.querySelector('img');
             if (mediaEl) {
-                detailDownloadBtn.href = mediaEl.src;
+                currentMediaUrl = mediaEl.src;
             }
 
             detailContent.classList.add('visible');
@@ -1945,7 +1968,7 @@
             // Update download button href
             const mediaEl = video || clone.querySelector('img');
             if (mediaEl) {
-                detailDownloadBtn.href = mediaEl.src;
+                currentMediaUrl = mediaEl.src;
             }
 
             if (video) {
