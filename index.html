@@ -411,6 +411,13 @@
             pointer-events: auto;
         }
 
+        /* Hide filter buttons in showcase and detail views */
+        body.showcase-active .filter-buttons,
+        body.detail-active .filter-buttons {
+            opacity: 0;
+            pointer-events: none;
+        }
+
         .showcase-close:hover {
             background: rgba(255, 255, 255, 0.75);
             transform: scale(1.05);
@@ -726,13 +733,23 @@
             .artwork:nth-child(28) { top: 1902vh; }
             .artwork:nth-child(29) { top: 1972vh; }
 
-            /* Sticky title at top on mobile */
+            /* Wabi logo scrolls away on mobile */
+            .wabi-logo {
+                position: absolute;
+                top: 24px;
+            }
+
+            /* Sticky title at top on mobile - moved down 50px */
             .sticky-title {
-                top: 3vh;
+                position: absolute;
+                top: calc(3vh + 50px);
                 left: 50%;
                 transform: translateX(-50%);
                 font-size: 2.5rem;
             }
+
+            /* First artwork moved down */
+            .artwork:nth-child(1) { top: calc(12vh + 50px); }
 
             .filter-buttons { bottom: 16px; gap: 8px; }
             .filter-btn { padding: 12px 20px; font-size: 0.85rem; }
