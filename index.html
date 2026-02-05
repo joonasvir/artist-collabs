@@ -535,18 +535,19 @@
         .filter-menu {
             position: fixed;
             bottom: 90px;
-            background: rgba(255, 255, 255, 0.55);
+            background: rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             padding: 28px 36px;
             border-radius: 24px;
             z-index: 200;
-            box-shadow: 0 16px 60px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 16px 60px rgba(0, 0, 0, 0.08);
             opacity: 0;
             pointer-events: none;
-            transform: translateY(20px) scale(0.9);
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform: translateY(10px) scale(0.95);
+            transform-origin: bottom center;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .filter-menu.open {
@@ -632,6 +633,7 @@
         .artwork:nth-child(26) { left: 10%; top: 1865vh; width: clamp(340px, 34vw, 650px); }
         .artwork:nth-child(27) { left: 50%; transform: translateX(-50%); top: 1940vh; width: clamp(280px, 28vw, 570px); }
         .artwork:nth-child(28) { right: 6%; left: auto; top: 2015vh; width: clamp(320px, 32vw, 625px); }
+        .artwork:nth-child(29) { left: 8%; top: 2090vh; width: clamp(300px, 30vw, 600px); }
 
         /* Hover states for centered artworks to preserve translateX */
         .artwork:nth-child(3):hover,
@@ -815,6 +817,20 @@
                     <span class="tag tag-ready">Ready</span>
                 </div>
                 <span class="artwork-title">License 1</span>
+            </div>
+        </article>
+
+        <!-- Jer Bosmans - Ready -->
+        <article class="artwork" data-artist="jer-bosmans" data-tag="ready" data-theme="remix">
+            <div class="artwork-image">
+                <img src="assets/jer-bosmans/Wabi_Artwork_License_2.png" alt="Jer Bosmans artwork">
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Jer Bosmans</span>
+                    <span class="tag tag-ready">Ready</span>
+                </div>
+                <span class="artwork-title">License 2</span>
             </div>
         </article>
 
