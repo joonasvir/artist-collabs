@@ -63,7 +63,7 @@
 
         .canvas {
             position: relative;
-            min-height: 2000vh;
+            min-height: 2200vh;
             padding: 10vh 0 20vh;
             transition: filter 0.4s ease;
         }
@@ -602,6 +602,8 @@
         .artwork:nth-child(24) { left: 50%; transform: translateX(-50%); top: 1715vh; width: clamp(320px, 32vw, 625px); }
         .artwork:nth-child(25) { right: 8%; left: auto; top: 1790vh; width: clamp(300px, 30vw, 600px); }
         .artwork:nth-child(26) { left: 10%; top: 1865vh; width: clamp(340px, 34vw, 650px); }
+        .artwork:nth-child(27) { left: 50%; transform: translateX(-50%); top: 1940vh; width: clamp(280px, 28vw, 570px); }
+        .artwork:nth-child(28) { right: 6%; left: auto; top: 2015vh; width: clamp(320px, 32vw, 625px); }
 
         /* Hover states for centered artworks to preserve translateX */
         .artwork:nth-child(3):hover,
@@ -611,7 +613,8 @@
         .artwork:nth-child(15):hover,
         .artwork:nth-child(18):hover,
         .artwork:nth-child(21):hover,
-        .artwork:nth-child(24):hover {
+        .artwork:nth-child(24):hover,
+        .artwork:nth-child(27):hover {
             transform: translateX(-50%) scale(1.02);
         }
 
@@ -759,6 +762,20 @@
             </div>
         </article>
 
+        <!-- Anoukia Perrey - Ready -->
+        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready" data-theme="loading">
+            <div class="artwork-image">
+                <video src="assets/anoukia-perrey/01_V1.mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Anoukia Perrey</span>
+                    <span class="tag tag-ready">Ready</span>
+                </div>
+                <span class="artwork-title">Artwork 01</span>
+            </div>
+        </article>
+
         <!-- Jer Bosmans - Ready -->
         <article class="artwork" data-artist="jer-bosmans" data-tag="ready" data-theme="remix">
             <div class="artwork-image">
@@ -812,6 +829,20 @@
                     <span class="tag tag-ready">Ready</span>
                 </div>
                 <span class="artwork-title">Artwork 02</span>
+            </div>
+        </article>
+
+        <!-- Anoukia Perrey - Ready -->
+        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready" data-theme="loading">
+            <div class="artwork-image">
+                <video src="assets/anoukia-perrey/04.mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Anoukia Perrey</span>
+                    <span class="tag tag-ready">Ready</span>
+                </div>
+                <span class="artwork-title">Artwork 04</span>
             </div>
         </article>
 
@@ -913,20 +944,6 @@
             </div>
         </article>
 
-        <!-- Anoukia Perrey - Ready -->
-        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready" data-theme="loading">
-            <div class="artwork-image">
-                <video src="assets/anoukia-perrey/08.mp4" autoplay loop muted playsinline></video>
-            </div>
-            <div class="artwork-info">
-                <div class="info-left">
-                    <span class="artist-name">Anoukia Perrey</span>
-                    <span class="tag tag-ready">Ready</span>
-                </div>
-                <span class="artwork-title">Artwork 08</span>
-            </div>
-        </article>
-
         <!-- Mario Carrillo - Draft -->
         <article class="artwork" data-artist="mario-carrillo" data-tag="draft" data-theme="remix">
             <div class="artwork-image">
@@ -980,6 +997,20 @@
                     <span class="tag tag-ready">Ready</span>
                 </div>
                 <span class="artwork-title">Artwork 09</span>
+            </div>
+        </article>
+
+        <!-- Anoukia Perrey - Ready -->
+        <article class="artwork" data-artist="anoukia-perrey" data-tag="ready" data-theme="loading">
+            <div class="artwork-image">
+                <video src="assets/anoukia-perrey/10_V2.mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Anoukia Perrey</span>
+                    <span class="tag tag-ready">Ready</span>
+                </div>
+                <span class="artwork-title">Artwork 10</span>
             </div>
         </article>
 
@@ -1658,7 +1689,19 @@
         }
 
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') clearFilter();
+            if (e.key === 'Escape') {
+                // Close one layer at a time: detail first, then showcase
+                if (isDetailActive) {
+                    clearDetail();
+                    return;
+                }
+                if (isShowcaseActive) {
+                    clearShowcase();
+                    return;
+                }
+                clearFilter();
+                return;
+            }
 
             // Arrow key navigation in detail view
             if (isDetailActive && detailNavigationList.length > 0) {
