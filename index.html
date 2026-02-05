@@ -63,23 +63,22 @@
             font-size: clamp(3rem, 10vw, 8rem);
             font-weight: 400;
             letter-spacing: -0.02em;
-            z-index: -1;
+            z-index: 40;
             pointer-events: none;
             user-select: none;
-            transition: opacity 0.5s ease, filter 0.4s ease, visibility 0.5s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body.showcase-active .sticky-title,
         body.detail-active .sticky-title {
-            opacity: 0.1;
-            filter: blur(10px);
+            opacity: 0;
         }
 
-        /* Scroll-based blur for sticky title - fade out completely on scroll */
+        /* On scroll, shrink and move under logo */
         .sticky-title.scrolled {
-            filter: blur(20px);
-            opacity: 0 !important;
-            visibility: hidden;
+            top: 90px;
+            font-size: 1.3rem;
+            opacity: 0.6;
         }
 
         .canvas {
@@ -118,7 +117,7 @@
         .artwork-info {
             display: flex;
             justify-content: space-between;
-            align-items: baseline;
+            align-items: flex-start;
             padding: 16px 4px 0;
             opacity: 0;
             transform: translateY(-8px);
@@ -132,12 +131,18 @@
 
         .info-left {
             display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-right {
+            display: flex;
+            gap: 8px;
             align-items: center;
-            gap: 12px;
         }
 
         .artist-name {
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             font-weight: 500;
             cursor: pointer;
             transition: opacity 0.2s;
@@ -148,7 +153,7 @@
         }
 
         .artwork-title {
-            font-size: 1.6rem;
+            font-size: 1.2rem;
             color: #999;
         }
 
@@ -172,8 +177,8 @@
 
         /* Theme tags */
         .tag-theme {
-            background: #f5f0ff;
-            color: #7c5cff;
+            background: #e8e8e8;
+            color: #555;
             position: relative;
         }
 
@@ -264,6 +269,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: flex-start;
             z-index: 3;
             transition: filter 0.3s ease, opacity 0.3s ease;
         }
@@ -310,8 +316,9 @@
 
         .artist-drive-btn {
             display: inline-block;
+            width: auto;
             margin-top: 20px;
-            padding: 12px 20px;
+            padding: 12px 18px;
             background: rgba(255, 255, 255, 0.65);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
@@ -525,6 +532,19 @@
             transform: translateY(0);
         }
 
+        .showcase-item .info-left {
+            align-items: flex-start;
+        }
+
+        .showcase-item .artwork-title {
+            text-align: left;
+        }
+
+        /* Hide artist name in showcase (artist view) since it's redundant */
+        .showcase-item .artist-name {
+            display: none;
+        }
+
         /* Detail view - single artwork */
         .detail-overlay {
             position: fixed;
@@ -585,6 +605,13 @@
             opacity: 1;
             transform: translateY(0);
             padding: 20px 8px 0;
+            justify-content: space-between;
+        }
+
+        .detail-content .info-left {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
         }
 
         .detail-content .artist-name {
@@ -594,6 +621,10 @@
 
         .detail-content .artist-name:hover {
             opacity: 0.6;
+        }
+
+        .detail-content .artwork-title {
+            font-size: 1.5rem;
         }
 
         .detail-content .artwork-title {
@@ -650,6 +681,7 @@
         .filter-menu {
             position: fixed;
             bottom: 90px;
+            left: 50%;
             background: rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
@@ -660,15 +692,15 @@
             box-shadow: 0 16px 60px rgba(0, 0, 0, 0.08);
             opacity: 0;
             pointer-events: none;
-            transform: translateY(10px) scale(0.95);
+            transform: translateX(-50%) translateY(20px) scale(0.9);
             transform-origin: bottom center;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .filter-menu.open {
             opacity: 1;
             pointer-events: auto;
-            transform: translateY(0) scale(1);
+            transform: translateX(-50%) translateY(0) scale(1);
         }
 
         /* Filter menus stay visible in all views */
@@ -685,6 +717,14 @@
             text-transform: uppercase;
             letter-spacing: 0.12em;
             font-weight: 500;
+        }
+
+        .filter-description {
+            font-size: 0.85rem;
+            color: #888;
+            text-align: center;
+            margin-bottom: 16px;
+            line-height: 1.4;
         }
 
         .filter-options {
@@ -719,7 +759,7 @@
         .artwork { width: clamp(320px, 32vw, 650px); }
 
         /* Pattern: left -> right -> center, with 85vh between each */
-        .artwork:nth-child(1) { left: 8%; top: 5vh; width: clamp(300px, 30vw, 600px); }
+        .artwork:nth-child(1) { left: 8%; top: max(100px, 10vh); width: clamp(300px, 30vw, 600px); }
         .artwork:nth-child(2) { right: 8%; left: auto; top: 90vh; width: clamp(320px, 32vw, 625px); }
         .artwork:nth-child(3) { left: 50%; transform: translateX(-50%); top: 175vh; width: clamp(340px, 34vw, 650px); }
         .artwork:nth-child(4) { left: 6%; top: 260vh; width: clamp(300px, 30vw, 600px); }
@@ -859,6 +899,7 @@
                 transform: none;
                 padding: 100px 24px 20px;
                 text-align: center;
+                align-items: center;
             }
 
             .artist-header.blurred {
@@ -963,6 +1004,7 @@
 
     <div class="filter-menu" id="status-menu">
         <div class="filter-section">
+            <p class="filter-description">Shows whether art is still WIP or is ready to post</p>
             <div class="filter-options">
                 <span class="filter-option" data-status="draft">Draft</span>
                 <span class="filter-option" data-status="ready">Ready</span>
@@ -972,6 +1014,7 @@
 
     <div class="filter-menu" id="theme-menu">
         <div class="filter-section">
+            <p class="filter-description">What part of Wabi experience artwork is depicting</p>
             <div class="filter-options">
                 <span class="filter-option" data-theme-filter="loading">Loading</span>
                 <span class="filter-option" data-theme-filter="remix">Remixing</span>
@@ -1454,11 +1497,28 @@
             return (video?.src || img?.src || '').split('/').pop();
         }
 
-        function addThemeTags() {
+        function restructureArtworkInfo() {
             document.querySelectorAll('.canvas .artwork').forEach(artwork => {
+                const artworkInfo = artwork.querySelector('.artwork-info');
                 const infoLeft = artwork.querySelector('.info-left');
-                if (!infoLeft || infoLeft.querySelector('.tag-theme')) return;
+                if (!artworkInfo || !infoLeft) return;
+                if (artworkInfo.querySelector('.info-right')) return; // Already restructured
 
+                // Move artwork-title into info-left (below artist name)
+                const artworkTitle = artworkInfo.querySelector('.artwork-title');
+                if (artworkTitle && !infoLeft.contains(artworkTitle)) {
+                    infoLeft.appendChild(artworkTitle);
+                }
+
+                // Create info-right for tags
+                const infoRight = document.createElement('div');
+                infoRight.className = 'info-right';
+
+                // Move existing tags to info-right
+                const existingTags = infoLeft.querySelectorAll('.tag');
+                existingTags.forEach(tag => infoRight.appendChild(tag));
+
+                // Add theme tag
                 const artworkId = getArtworkId(artwork);
                 const savedTheme = savedThemes[artworkId];
                 if (savedTheme) {
@@ -1471,12 +1531,14 @@
                     themeTag.className = 'tag tag-theme';
                     themeTag.textContent = themeLabels[theme];
                     themeTag.dataset.artworkId = artworkId;
-                    infoLeft.appendChild(themeTag);
+                    infoRight.appendChild(themeTag);
                 }
+
+                artworkInfo.appendChild(infoRight);
             });
         }
 
-        addThemeTags();
+        restructureArtworkInfo();
 
         // Theme editor
         const themeEditor = document.getElementById('theme-editor');
@@ -1488,6 +1550,8 @@
             const themeTag = e.target.closest('.tag-theme');
             if (themeTag && !e.target.closest('.filter-menu')) {
                 e.stopPropagation();
+                e.preventDefault();
+
                 currentEditingTag = themeTag;
                 currentEditingArtwork = themeTag.closest('[data-theme]');
 
@@ -1503,8 +1567,9 @@
                 });
 
                 themeEditor.classList.add('open');
+                return false;
             }
-        });
+        }, true);
 
         // Handle theme option selection
         themeEditor.querySelectorAll('.theme-option').forEach(option => {
@@ -1711,11 +1776,10 @@
                     btn.classList.toggle('active');
                     activeMenu = menu.classList.contains('open') ? menu : null;
 
-                    // Position menu above the button
+                    // Position menu above the button (centered on the button)
                     if (menu.classList.contains('open')) {
                         const btnRect = btn.getBoundingClientRect();
-                        menu.style.left = btnRect.left + (btnRect.width / 2) + 'px';
-                        menu.style.transform = 'translateX(-50%)';
+                        menu.style.left = (btnRect.left + btnRect.width / 2) + 'px';
                     }
                 }
             });
@@ -1812,11 +1876,11 @@
             }
         });
 
-        // Click tag anywhere to filter by that tag
+        // Click tag anywhere to filter by that tag (except theme tags which have their own editor)
         document.addEventListener('click', (e) => {
             const tag = e.target.closest('.tag');
-            // Ignore tags in filter menu
-            if (tag && !tag.closest('.filter-menu') && !tag.closest('.tag-bar')) {
+            // Ignore tags in filter menu, tag-bar, or theme tags (which have their own dropdown editor)
+            if (tag && !tag.closest('.filter-menu') && !tag.closest('.tag-bar') && !tag.classList.contains('tag-theme')) {
                 e.stopPropagation();
                 const tagValue = tag.textContent.toLowerCase();
                 const status = statusData[tagValue];
@@ -2263,7 +2327,7 @@
         // Scroll-based blur for sticky title
         const stickyTitle = document.querySelector('.sticky-title');
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
+            if (window.scrollY > 200) {
                 stickyTitle.classList.add('scrolled');
             } else {
                 stickyTitle.classList.remove('scrolled');
@@ -2286,76 +2350,6 @@
             }
         })();
 
-        // Drag functionality for artworks on desktop
-        (function() {
-            if (window.innerWidth < 900) return; // Skip on mobile
-
-            let draggedArtwork = null;
-            let offsetX, offsetY;
-            let isDragging = false;
-
-            artworks.forEach(artwork => {
-                artwork.addEventListener('mousedown', (e) => {
-                    // Only drag if clicking on the image area, not info
-                    if (e.target.closest('.artwork-info')) return;
-                    if (e.target.closest('.tag')) return;
-
-                    draggedArtwork = artwork;
-                    const rect = artwork.getBoundingClientRect();
-                    offsetX = e.clientX - rect.left;
-                    offsetY = e.clientY - rect.top;
-                    isDragging = false;
-
-                    artwork.style.zIndex = '100';
-                    artwork.style.cursor = 'grabbing';
-                    e.preventDefault();
-                });
-            });
-
-            document.addEventListener('mousemove', (e) => {
-                if (!draggedArtwork) return;
-                isDragging = true;
-
-                const scrollY = window.scrollY;
-                const newLeft = e.clientX - offsetX;
-                const newTop = e.clientY + scrollY - offsetY;
-
-                draggedArtwork.style.left = newLeft + 'px';
-                draggedArtwork.style.top = newTop + 'px';
-                draggedArtwork.style.right = 'auto';
-                draggedArtwork.style.transform = 'none';
-            });
-
-            document.addEventListener('mouseup', () => {
-                if (draggedArtwork) {
-                    draggedArtwork.style.zIndex = '';
-                    draggedArtwork.style.cursor = '';
-
-                    // Save position to localStorage
-                    const artworkId = getArtworkId(draggedArtwork);
-                    const positions = JSON.parse(localStorage.getItem('artworkPositions') || '{}');
-                    positions[artworkId] = {
-                        left: draggedArtwork.style.left,
-                        top: draggedArtwork.style.top
-                    };
-                    localStorage.setItem('artworkPositions', JSON.stringify(positions));
-
-                    draggedArtwork = null;
-                }
-            });
-
-            // Load saved positions
-            const savedPositions = JSON.parse(localStorage.getItem('artworkPositions') || '{}');
-            artworks.forEach(artwork => {
-                const artworkId = getArtworkId(artwork);
-                if (savedPositions[artworkId]) {
-                    artwork.style.left = savedPositions[artworkId].left;
-                    artwork.style.top = savedPositions[artworkId].top;
-                    artwork.style.right = 'auto';
-                    artwork.style.transform = 'none';
-                }
-            });
-        })();
     </script>
 </body>
 </html>
