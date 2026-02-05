@@ -63,10 +63,10 @@
             font-size: clamp(3rem, 10vw, 8rem);
             font-weight: 400;
             letter-spacing: -0.02em;
-            z-index: 40;
+            z-index: 5;
             pointer-events: none;
             user-select: none;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body.showcase-active .sticky-title,
@@ -74,11 +74,10 @@
             opacity: 0;
         }
 
-        /* On scroll, shrink and move under logo */
+        /* On scroll, fade and blur but stay visible at 20% */
         .sticky-title.scrolled {
-            top: 90px;
-            font-size: 1.3rem;
-            opacity: 0.6;
+            opacity: 0.2;
+            filter: blur(8px);
         }
 
         .canvas {
@@ -426,27 +425,27 @@
         }
 
         .showcase-nav {
-            width: 52px;
-            height: 52px;
-            background: rgba(255, 255, 255, 0.65);
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.9);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            border: none;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
-            color: #333;
+            font-size: 1.5rem;
+            color: #fff;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
 
         .showcase-nav:hover {
-            background: rgba(255, 255, 255, 0.75);
+            background: rgba(0, 0, 0, 1);
             transform: scale(1.08);
-            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
         }
 
         .showcase-nav:disabled {
@@ -694,6 +693,7 @@
             pointer-events: none;
             transform: translateX(-50%) translateY(20px) scale(0.9);
             transform-origin: bottom center;
+            max-width: 240px;
             transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
