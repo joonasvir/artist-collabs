@@ -2287,14 +2287,20 @@
 
         artworks.forEach(artwork => observer.observe(artwork));
 
-        // Scroll-based blur for sticky title
+        // Scroll-based blur for sticky title - progressive blur
         const stickyTitle = document.querySelector('.sticky-title');
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 400) {
-                stickyTitle.classList.add('scrolled');
-            } else {
-                stickyTitle.classList.remove('scrolled');
-            }
+            const scrollY = window.scrollY;
+            const maxScroll = 600; // Full blur at 600px scroll
+            const progress = Math.min(scrollY / maxScroll, 1);
+
+            // Interpolate opacity from 1 to 0.2
+            const opacity = 1 - (progress * 0.8);
+            // Interpolate blur from 0 to 30px
+            const blur = progress * 30;
+
+            stickyTitle.style.opacity = opacity;
+            stickyTitle.style.filter = `blur(${blur}px)`;
         });
 
         // Open artwork from URL parameter
