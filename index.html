@@ -241,8 +241,7 @@
         }
 
         .artist-drive-btn {
-            display: inline-flex;
-            align-items: center;
+            display: inline-block;
             margin-top: 20px;
             padding: 14px 28px;
             background: rgba(255, 255, 255, 0.65);
@@ -254,11 +253,45 @@
             font-weight: 500;
             color: inherit;
             text-decoration: none;
+            text-align: center;
             box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
         }
 
         .artist-drive-btn:hover {
+            background: rgba(255, 255, 255, 0.75);
+            transform: scale(1.05);
+        }
+
+        /* Download button in detail view */
+        .detail-download-btn {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            padding: 14px 28px;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 100px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: inherit;
+            text-decoration: none;
+            text-align: center;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            z-index: 70;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        body.detail-active .detail-download-btn {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .detail-download-btn:hover {
             background: rgba(255, 255, 255, 0.75);
             transform: scale(1.05);
         }
@@ -758,6 +791,8 @@
         <div class="detail-content"></div>
     </div>
 
+    <a class="detail-download-btn" href="#" download>Download</a>
+
     <div class="canvas">
         <!-- Pol Sola - Ready -->
         <article class="artwork" data-artist="pol-sola" data-tag="ready" data-theme="logo">
@@ -1196,6 +1231,7 @@
         const detailOverlay = document.querySelector('.detail-overlay');
         const detailArtistInfo = document.querySelector('.detail-artist-info');
         const detailContent = document.querySelector('.detail-content');
+        const detailDownloadBtn = document.querySelector('.detail-download-btn');
 
         // Showcase navigation
         showcasePrev.addEventListener('click', () => {
@@ -1480,6 +1516,12 @@
             }
             if (infoWrapper) detailContent.appendChild(infoWrapper);
 
+            // Set download button href
+            const mediaEl = video || clone.querySelector('img');
+            if (mediaEl) {
+                detailDownloadBtn.href = mediaEl.src;
+            }
+
             detailContent.classList.add('visible');
 
             if (video) {
@@ -1529,6 +1571,12 @@
                 detailContent.appendChild(imageWrapper);
             }
             if (infoWrapper) detailContent.appendChild(infoWrapper);
+
+            // Set download button href
+            const mediaEl = video || clone.querySelector('img');
+            if (mediaEl) {
+                detailDownloadBtn.href = mediaEl.src;
+            }
 
             detailContent.classList.add('visible');
 
@@ -1799,6 +1847,12 @@
                 detailContent.appendChild(imageWrapper);
             }
             if (infoWrapper) detailContent.appendChild(infoWrapper);
+
+            // Update download button href
+            const mediaEl = video || clone.querySelector('img');
+            if (mediaEl) {
+                detailDownloadBtn.href = mediaEl.src;
+            }
 
             if (video) {
                 video.play().catch(() => {
