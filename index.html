@@ -63,7 +63,7 @@
 
         .canvas {
             position: relative;
-            min-height: 1720vh;
+            min-height: 2000vh;
             padding: 10vh 0 20vh;
             transition: filter 0.4s ease;
         }
@@ -599,6 +599,9 @@
         .artwork:nth-child(21) { left: 50%; transform: translateX(-50%); top: 1490vh; width: clamp(300px, 30vw, 600px); }
         .artwork:nth-child(22) { right: 10%; left: auto; top: 1565vh; width: clamp(340px, 34vw, 650px); }
         .artwork:nth-child(23) { left: 6%; top: 1640vh; width: clamp(280px, 28vw, 570px); }
+        .artwork:nth-child(24) { left: 50%; transform: translateX(-50%); top: 1715vh; width: clamp(320px, 32vw, 625px); }
+        .artwork:nth-child(25) { right: 8%; left: auto; top: 1790vh; width: clamp(300px, 30vw, 600px); }
+        .artwork:nth-child(26) { left: 10%; top: 1865vh; width: clamp(340px, 34vw, 650px); }
 
         /* Hover states for centered artworks to preserve translateX */
         .artwork:nth-child(3):hover,
@@ -607,7 +610,8 @@
         .artwork:nth-child(12):hover,
         .artwork:nth-child(15):hover,
         .artwork:nth-child(18):hover,
-        .artwork:nth-child(21):hover {
+        .artwork:nth-child(21):hover,
+        .artwork:nth-child(24):hover {
             transform: translateX(-50%) scale(1.02);
         }
 
@@ -690,6 +694,7 @@
                 <span class="filter-option" data-artist="jer-bosmans">Jer Bosmans</span>
                 <span class="filter-option" data-artist="mario-carrillo">Mario Carrillo</span>
                 <span class="filter-option" data-artist="olivia-pedigo">Olivia Pedigo</span>
+                <span class="filter-option" data-artist="jason-ting">Jason Ting</span>
             </div>
         </div>
     </div>
@@ -1033,6 +1038,62 @@
                 <span class="artwork-title">Artwork 13</span>
             </div>
         </article>
+
+        <!-- Jason Ting - Ready -->
+        <article class="artwork" data-artist="jason-ting" data-tag="ready" data-theme="loading">
+            <div class="artwork-image">
+                <video src="assets/jason-ting/02_circle_pack_sunrise_3%20(2).mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Jason Ting</span>
+                    <span class="tag tag-ready">Ready</span>
+                </div>
+                <span class="artwork-title">Circle Pack Sunrise</span>
+            </div>
+        </article>
+
+        <!-- Jason Ting - Ready -->
+        <article class="artwork" data-artist="jason-ting" data-tag="ready" data-theme="loading">
+            <div class="artwork-image">
+                <video src="assets/jason-ting/02_circle_pack_white_bg_3.mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Jason Ting</span>
+                    <span class="tag tag-ready">Ready</span>
+                </div>
+                <span class="artwork-title">Circle Pack White</span>
+            </div>
+        </article>
+
+        <!-- Jason Ting - Ready -->
+        <article class="artwork" data-artist="jason-ting" data-tag="ready" data-theme="loading">
+            <div class="artwork-image">
+                <video src="assets/jason-ting/05_rebirth_3.mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Jason Ting</span>
+                    <span class="tag tag-ready">Ready</span>
+                </div>
+                <span class="artwork-title">Rebirth</span>
+            </div>
+        </article>
+
+        <!-- Jason Ting - Ready -->
+        <article class="artwork" data-artist="jason-ting" data-tag="ready" data-theme="loading">
+            <div class="artwork-image">
+                <video src="assets/jason-ting/06_dream_flow_3%20(1).mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="artwork-info">
+                <div class="info-left">
+                    <span class="artist-name">Jason Ting</span>
+                    <span class="tag tag-ready">Ready</span>
+                </div>
+                <span class="artwork-title">Dream Flow</span>
+            </div>
+        </article>
     </div>
 
     <script>
@@ -1126,6 +1187,15 @@
                 socials: {
                     instagram: 'https://instagram.com/oliviapedi',
                     website: 'https://oliviapedigo.com'
+                }
+            },
+            'jason-ting': {
+                name: 'Jason Ting',
+                description: 'New Media Artist & Creative Coder based in Connecticut',
+                socials: {
+                    instagram: 'https://instagram.com/jzlabs',
+                    twitter: 'https://x.com/_jzlabs',
+                    website: 'https://jasonting.studio'
                 }
             }
         };
