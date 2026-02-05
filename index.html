@@ -61,6 +61,12 @@
             filter: blur(10px);
         }
 
+        /* Scroll-based blur for sticky title */
+        .sticky-title.scrolled {
+            filter: blur(8px);
+            opacity: 0.3;
+        }
+
         .canvas {
             position: relative;
             min-height: 2200vh;
@@ -677,7 +683,7 @@
         }
 
         @media (max-width: 900px) {
-            .canvas { min-height: 1800vh; }
+            .canvas { min-height: 2200vh; }
 
             .artwork {
                 width: 85vw !important;
@@ -690,31 +696,44 @@
                 transform: translateX(-50%) scale(1.02);
             }
 
-            .artwork:nth-child(1) { top: 5vh; }
-            .artwork:nth-child(2) { top: 75vh; }
-            .artwork:nth-child(3) { top: 145vh; }
-            .artwork:nth-child(4) { top: 215vh; }
-            .artwork:nth-child(5) { top: 285vh; }
-            .artwork:nth-child(6) { top: 355vh; }
-            .artwork:nth-child(7) { top: 425vh; }
-            .artwork:nth-child(8) { top: 495vh; }
-            .artwork:nth-child(9) { top: 565vh; }
-            .artwork:nth-child(10) { top: 635vh; }
-            .artwork:nth-child(11) { top: 705vh; }
-            .artwork:nth-child(12) { top: 775vh; }
-            .artwork:nth-child(13) { top: 845vh; }
-            .artwork:nth-child(14) { top: 915vh; }
-            .artwork:nth-child(15) { top: 985vh; }
-            .artwork:nth-child(16) { top: 1055vh; }
-            .artwork:nth-child(17) { top: 1125vh; }
-            .artwork:nth-child(18) { top: 1195vh; }
-            .artwork:nth-child(19) { top: 1265vh; }
-            .artwork:nth-child(20) { top: 1335vh; }
-            .artwork:nth-child(21) { top: 1405vh; }
-            .artwork:nth-child(22) { top: 1475vh; }
-            .artwork:nth-child(23) { top: 1545vh; }
+            .artwork:nth-child(1) { top: 12vh; }
+            .artwork:nth-child(2) { top: 82vh; }
+            .artwork:nth-child(3) { top: 152vh; }
+            .artwork:nth-child(4) { top: 222vh; }
+            .artwork:nth-child(5) { top: 292vh; }
+            .artwork:nth-child(6) { top: 362vh; }
+            .artwork:nth-child(7) { top: 432vh; }
+            .artwork:nth-child(8) { top: 502vh; }
+            .artwork:nth-child(9) { top: 572vh; }
+            .artwork:nth-child(10) { top: 642vh; }
+            .artwork:nth-child(11) { top: 712vh; }
+            .artwork:nth-child(12) { top: 782vh; }
+            .artwork:nth-child(13) { top: 852vh; }
+            .artwork:nth-child(14) { top: 922vh; }
+            .artwork:nth-child(15) { top: 992vh; }
+            .artwork:nth-child(16) { top: 1062vh; }
+            .artwork:nth-child(17) { top: 1132vh; }
+            .artwork:nth-child(18) { top: 1202vh; }
+            .artwork:nth-child(19) { top: 1272vh; }
+            .artwork:nth-child(20) { top: 1342vh; }
+            .artwork:nth-child(21) { top: 1412vh; }
+            .artwork:nth-child(22) { top: 1482vh; }
+            .artwork:nth-child(23) { top: 1552vh; }
+            .artwork:nth-child(24) { top: 1622vh; }
+            .artwork:nth-child(25) { top: 1692vh; }
+            .artwork:nth-child(26) { top: 1762vh; }
+            .artwork:nth-child(27) { top: 1832vh; }
+            .artwork:nth-child(28) { top: 1902vh; }
+            .artwork:nth-child(29) { top: 1972vh; }
 
-            .sticky-title { font-size: 2.5rem; }
+            /* Sticky title at top on mobile */
+            .sticky-title {
+                top: 3vh;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 2.5rem;
+            }
+
             .filter-buttons { bottom: 16px; gap: 8px; }
             .filter-btn { padding: 12px 20px; font-size: 0.85rem; }
             .filter-menu {
@@ -723,13 +742,71 @@
                 max-width: 90vw;
             }
             .filter-option { font-size: 1.1rem; }
-            .showcase-item { width: 340px; }
-            .showcase-scroll { gap: 28px; padding: 0 5vw; }
+
+            /* Vertical scroll for showcase on mobile */
+            .showcase-overlay {
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+
+            .artist-header {
+                position: relative;
+                width: 100%;
+                top: auto;
+                transform: none;
+                padding: 100px 24px 20px;
+                text-align: center;
+            }
+
+            .artist-header.blurred {
+                filter: none;
+                opacity: 1;
+            }
+
+            .artist-header h2 {
+                font-size: 2rem;
+            }
+
+            .artist-socials {
+                justify-content: center;
+            }
+
+            .showcase-scroll-container {
+                position: relative;
+                height: auto;
+                min-height: auto;
+            }
+
+            .showcase-scroll {
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 24px 120px;
+                overflow-x: hidden;
+                overflow-y: visible;
+                height: auto;
+                width: 100%;
+            }
+
+            .showcase-item {
+                width: 85vw !important;
+                flex-shrink: 0;
+            }
+
+            .showcase-nav-container {
+                display: none;
+            }
 
             .detail-content { max-width: 95vw; }
             .detail-content .artwork-image video,
             .detail-content .artwork-image img {
                 max-width: 95vw;
+            }
+
+            .detail-download-btn {
+                bottom: 24px;
+                right: 24px;
+                padding: 12px 20px;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -1884,6 +1961,16 @@
         }, { threshold: 0.1 });
 
         artworks.forEach(artwork => observer.observe(artwork));
+
+        // Scroll-based blur for sticky title
+        const stickyTitle = document.querySelector('.sticky-title');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                stickyTitle.classList.add('scrolled');
+            } else {
+                stickyTitle.classList.remove('scrolled');
+            }
+        });
     </script>
 </body>
 </html>
