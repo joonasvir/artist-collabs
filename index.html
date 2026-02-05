@@ -4,6 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Collabs — Wabi</title>
+
+    <!-- Open Graph / Social Share -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://wabicollabs.joonasvirtanen.com">
+    <meta property="og:title" content="Collabs — Wabi">
+    <meta property="og:description" content="A catalogue of artist collaborations for Wabi, featuring work from visual artists and creative coders.">
+    <meta property="og:image" content="https://wabicollabs.joonasvirtanen.com/assets/og-image.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Collabs — Wabi">
+    <meta name="twitter:description" content="A catalogue of artist collaborations for Wabi, featuring work from visual artists and creative coders.">
+    <meta name="twitter:image" content="https://wabicollabs.joonasvirtanen.com/assets/og-image.png">
+
     <link rel="stylesheet" href="https://fonts.joonasvirtanen.com/selecta/selecta.css">
     <style>
         * {
@@ -52,7 +66,7 @@
             z-index: -1;
             pointer-events: none;
             user-select: none;
-            transition: opacity 0.5s ease, filter 0.4s ease;
+            transition: opacity 0.5s ease, filter 0.4s ease, visibility 0.5s ease;
         }
 
         body.showcase-active .sticky-title,
@@ -64,7 +78,8 @@
         /* Scroll-based blur for sticky title - fade out completely on scroll */
         .sticky-title.scrolled {
             filter: blur(20px);
-            opacity: 0;
+            opacity: 0 !important;
+            visibility: hidden;
         }
 
         .canvas {
@@ -155,6 +170,53 @@
         .tag-licensed { background: #e8e8e8; color: #555; }
         .tag-custom { background: #e8e8e8; color: #555; }
 
+        /* Theme tags */
+        .tag-theme {
+            background: #f5f0ff;
+            color: #7c5cff;
+            position: relative;
+        }
+
+        /* Theme editor dropdown */
+        .theme-editor {
+            position: fixed;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 8px 0;
+            z-index: 300;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(-5px);
+            transition: all 0.2s ease;
+        }
+
+        .theme-editor.open {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .theme-option {
+            display: block;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .theme-option:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .theme-option.active {
+            font-weight: 600;
+            color: #7c5cff;
+        }
+
         /* Showcase mode */
         body.showcase-active .canvas,
         body.detail-active .canvas {
@@ -197,7 +259,7 @@
             left: 0;
             top: 50%;
             transform: translateY(-50%);
-            width: 480px;
+            width: 580px;
             padding: 40px 60px 40px 100px;
             display: flex;
             flex-direction: column;
@@ -269,11 +331,26 @@
             transform: scale(1.05);
         }
 
-        /* Download button in detail view */
-        .detail-download-btn {
+        /* Detail view buttons container */
+        .detail-buttons {
             position: fixed;
             bottom: 40px;
-            right: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 70;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        body.detail-active .detail-buttons {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .detail-btn {
             padding: 16px 28px;
             background: rgba(255, 255, 255, 0.65);
             backdrop-filter: blur(24px);
@@ -287,18 +364,10 @@
             text-align: center;
             cursor: pointer;
             box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-            z-index: 70;
-            opacity: 0;
-            pointer-events: none;
             transition: all 0.3s ease;
         }
 
-        body.detail-active .detail-download-btn {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .detail-download-btn:hover {
+        .detail-btn:hover {
             background: rgba(255, 255, 255, 0.75);
             transform: scale(1.05);
         }
@@ -319,7 +388,7 @@
             display: flex;
             align-items: center;
             gap: 32px;
-            padding: 0 80px 0 580px;
+            padding: 0 80px 0 680px;
             overflow-x: auto;
             overflow-y: hidden;
             scrollbar-width: none;
@@ -750,23 +819,21 @@
                 padding: 12px 20px;
             }
 
-            /* Download button mobile font size */
-            .detail-download-btn {
+            /* Detail buttons on mobile */
+            .detail-buttons {
+                bottom: 24px;
+                gap: 8px;
+            }
+
+            .detail-btn {
                 font-size: 0.85rem;
                 padding: 12px 20px;
             }
 
-            /* On detail view (individual artwork), close and download buttons side by side below artwork */
+            /* On detail view (individual artwork), close button above the action buttons */
             body.detail-active .showcase-close {
-                bottom: 24px;
-                left: calc(50% - 70px);
-                transform: translateX(-50%);
-            }
-
-            body.detail-active .detail-download-btn {
-                bottom: 24px;
-                right: auto;
-                left: calc(50% + 70px);
+                bottom: 80px;
+                left: 50%;
                 transform: translateX(-50%);
             }
 
@@ -878,6 +945,7 @@
     <div class="filter-buttons">
         <button class="filter-btn" data-menu="artists">Artist</button>
         <button class="filter-btn" data-menu="status">Status</button>
+        <button class="filter-btn" data-menu="theme">Theme</button>
     </div>
 
     <div class="filter-menu" id="artists-menu">
@@ -902,6 +970,22 @@
         </div>
     </div>
 
+    <div class="filter-menu" id="theme-menu">
+        <div class="filter-section">
+            <div class="filter-options">
+                <span class="filter-option" data-theme-filter="loading">Loading</span>
+                <span class="filter-option" data-theme-filter="remix">Remixing</span>
+                <span class="filter-option" data-theme-filter="logo">Logo</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theme editor dropdown -->
+    <div class="theme-editor" id="theme-editor">
+        <span class="theme-option" data-theme-value="loading">Loading</span>
+        <span class="theme-option" data-theme-value="remix">Remixing</span>
+        <span class="theme-option" data-theme-value="logo">Logo</span>
+    </div>
 
     <h1 class="sticky-title">Collabs</h1>
 
@@ -924,7 +1008,10 @@
         <div class="detail-content"></div>
     </div>
 
-    <button class="detail-download-btn">Download</button>
+    <div class="detail-buttons">
+        <button class="detail-btn detail-download-btn">Download</button>
+        <button class="detail-btn detail-copy-btn">Copy link</button>
+    </div>
 
     <div class="canvas">
         <!-- Pol Sola - Ready -->
@@ -1350,6 +1437,106 @@
             artworkElements.forEach(artwork => canvas.appendChild(artwork));
         })();
 
+        // Theme labels
+        const themeLabels = {
+            'loading': 'Loading',
+            'remix': 'Remixing',
+            'logo': 'Logo'
+        };
+
+        // Load saved themes from localStorage
+        const savedThemes = JSON.parse(localStorage.getItem('artworkThemes') || '{}');
+
+        // Add theme tags to all artworks
+        function getArtworkId(artwork) {
+            const video = artwork.querySelector('video');
+            const img = artwork.querySelector('img');
+            return (video?.src || img?.src || '').split('/').pop();
+        }
+
+        function addThemeTags() {
+            document.querySelectorAll('.canvas .artwork').forEach(artwork => {
+                const infoLeft = artwork.querySelector('.info-left');
+                if (!infoLeft || infoLeft.querySelector('.tag-theme')) return;
+
+                const artworkId = getArtworkId(artwork);
+                const savedTheme = savedThemes[artworkId];
+                if (savedTheme) {
+                    artwork.dataset.theme = savedTheme;
+                }
+
+                const theme = artwork.dataset.theme;
+                if (theme && themeLabels[theme]) {
+                    const themeTag = document.createElement('span');
+                    themeTag.className = 'tag tag-theme';
+                    themeTag.textContent = themeLabels[theme];
+                    themeTag.dataset.artworkId = artworkId;
+                    infoLeft.appendChild(themeTag);
+                }
+            });
+        }
+
+        addThemeTags();
+
+        // Theme editor
+        const themeEditor = document.getElementById('theme-editor');
+        let currentEditingTag = null;
+        let currentEditingArtwork = null;
+
+        // Handle theme tag clicks
+        document.addEventListener('click', (e) => {
+            const themeTag = e.target.closest('.tag-theme');
+            if (themeTag && !e.target.closest('.filter-menu')) {
+                e.stopPropagation();
+                currentEditingTag = themeTag;
+                currentEditingArtwork = themeTag.closest('[data-theme]');
+
+                // Position the editor
+                const rect = themeTag.getBoundingClientRect();
+                themeEditor.style.left = rect.left + 'px';
+                themeEditor.style.top = (rect.bottom + 8) + 'px';
+
+                // Mark current theme as active
+                const currentTheme = currentEditingArtwork?.dataset.theme;
+                themeEditor.querySelectorAll('.theme-option').forEach(opt => {
+                    opt.classList.toggle('active', opt.dataset.themeValue === currentTheme);
+                });
+
+                themeEditor.classList.add('open');
+            }
+        });
+
+        // Handle theme option selection
+        themeEditor.querySelectorAll('.theme-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const newTheme = option.dataset.themeValue;
+
+                if (currentEditingArtwork && currentEditingTag) {
+                    // Update data attribute
+                    currentEditingArtwork.dataset.theme = newTheme;
+                    // Update tag text
+                    currentEditingTag.textContent = themeLabels[newTheme];
+
+                    // Save to localStorage
+                    const artworkId = currentEditingTag.dataset.artworkId;
+                    savedThemes[artworkId] = newTheme;
+                    localStorage.setItem('artworkThemes', JSON.stringify(savedThemes));
+                }
+
+                themeEditor.classList.remove('open');
+                currentEditingTag = null;
+                currentEditingArtwork = null;
+            });
+        });
+
+        // Close theme editor on outside click
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.theme-editor') && !e.target.closest('.tag-theme')) {
+                themeEditor.classList.remove('open');
+            }
+        });
+
         const artworks = document.querySelectorAll('.canvas .artwork');
         const filterBar = document.querySelector('.filter-bar');
         const filterName = document.querySelector('.filter-name');
@@ -1365,7 +1552,9 @@
         const detailArtistInfo = document.querySelector('.detail-artist-info');
         const detailContent = document.querySelector('.detail-content');
         const detailDownloadBtn = document.querySelector('.detail-download-btn');
+        const detailCopyBtn = document.querySelector('.detail-copy-btn');
         let currentMediaUrl = null;
+        let currentArtworkId = null;
 
         // Download button click handler
         detailDownloadBtn.addEventListener('click', async () => {
@@ -1385,6 +1574,22 @@
             } catch (err) {
                 // Fallback: open in new tab
                 window.open(currentMediaUrl, '_blank');
+            }
+        });
+
+        // Copy link button click handler
+        detailCopyBtn.addEventListener('click', async () => {
+            if (!currentArtworkId) return;
+            const url = `${window.location.origin}${window.location.pathname}?artwork=${encodeURIComponent(currentArtworkId)}`;
+            try {
+                await navigator.clipboard.writeText(url);
+                detailCopyBtn.textContent = 'Copied!';
+                setTimeout(() => {
+                    detailCopyBtn.textContent = 'Copy link';
+                }, 2000);
+            } catch (err) {
+                // Fallback
+                prompt('Copy this link:', url);
             }
         });
 
@@ -1553,6 +1758,19 @@
             });
         });
 
+        // Theme filter options
+        document.querySelectorAll('.filter-option[data-theme-filter]').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const themeValue = option.dataset.themeFilter;
+                const themeName = themeLabels[themeValue] || themeValue;
+                filterMenus.forEach(menu => menu.classList.remove('open'));
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                activeMenu = null;
+                applyThemeFilter(themeValue, themeName);
+            });
+        });
+
         // Click artwork image to open detail view (from canvas or showcase)
         document.addEventListener('click', (e) => {
             const artworkImage = e.target.closest('.artwork-image');
@@ -1671,10 +1889,11 @@
             }
             if (infoWrapper) detailContent.appendChild(infoWrapper);
 
-            // Set download button href
+            // Set download button href and artwork ID for copy link
             const mediaEl = video || clone.querySelector('img');
             if (mediaEl) {
                 currentMediaUrl = mediaEl.src;
+                currentArtworkId = getArtworkId(artwork);
             }
 
             detailContent.classList.add('visible');
@@ -1727,10 +1946,11 @@
             }
             if (infoWrapper) detailContent.appendChild(infoWrapper);
 
-            // Set download button href
+            // Set download button href and artwork ID for copy link
             const mediaEl = video || clone.querySelector('img');
             if (mediaEl) {
                 currentMediaUrl = mediaEl.src;
+                currentArtworkId = mediaEl.src.split('/').pop();
             }
 
             detailContent.classList.add('visible');
@@ -2043,12 +2263,99 @@
         // Scroll-based blur for sticky title
         const stickyTitle = document.querySelector('.sticky-title');
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 100) {
+            if (window.scrollY > 50) {
                 stickyTitle.classList.add('scrolled');
             } else {
                 stickyTitle.classList.remove('scrolled');
             }
         });
+
+        // Open artwork from URL parameter
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const artworkParam = params.get('artwork');
+            if (artworkParam) {
+                // Find artwork by filename
+                const artwork = Array.from(artworks).find(a => {
+                    const id = getArtworkId(a);
+                    return id === artworkParam || decodeURIComponent(id) === decodeURIComponent(artworkParam);
+                });
+                if (artwork) {
+                    setTimeout(() => openDetail(artwork), 500);
+                }
+            }
+        })();
+
+        // Drag functionality for artworks on desktop
+        (function() {
+            if (window.innerWidth < 900) return; // Skip on mobile
+
+            let draggedArtwork = null;
+            let offsetX, offsetY;
+            let isDragging = false;
+
+            artworks.forEach(artwork => {
+                artwork.addEventListener('mousedown', (e) => {
+                    // Only drag if clicking on the image area, not info
+                    if (e.target.closest('.artwork-info')) return;
+                    if (e.target.closest('.tag')) return;
+
+                    draggedArtwork = artwork;
+                    const rect = artwork.getBoundingClientRect();
+                    offsetX = e.clientX - rect.left;
+                    offsetY = e.clientY - rect.top;
+                    isDragging = false;
+
+                    artwork.style.zIndex = '100';
+                    artwork.style.cursor = 'grabbing';
+                    e.preventDefault();
+                });
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!draggedArtwork) return;
+                isDragging = true;
+
+                const scrollY = window.scrollY;
+                const newLeft = e.clientX - offsetX;
+                const newTop = e.clientY + scrollY - offsetY;
+
+                draggedArtwork.style.left = newLeft + 'px';
+                draggedArtwork.style.top = newTop + 'px';
+                draggedArtwork.style.right = 'auto';
+                draggedArtwork.style.transform = 'none';
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (draggedArtwork) {
+                    draggedArtwork.style.zIndex = '';
+                    draggedArtwork.style.cursor = '';
+
+                    // Save position to localStorage
+                    const artworkId = getArtworkId(draggedArtwork);
+                    const positions = JSON.parse(localStorage.getItem('artworkPositions') || '{}');
+                    positions[artworkId] = {
+                        left: draggedArtwork.style.left,
+                        top: draggedArtwork.style.top
+                    };
+                    localStorage.setItem('artworkPositions', JSON.stringify(positions));
+
+                    draggedArtwork = null;
+                }
+            });
+
+            // Load saved positions
+            const savedPositions = JSON.parse(localStorage.getItem('artworkPositions') || '{}');
+            artworks.forEach(artwork => {
+                const artworkId = getArtworkId(artwork);
+                if (savedPositions[artworkId]) {
+                    artwork.style.left = savedPositions[artworkId].left;
+                    artwork.style.top = savedPositions[artworkId].top;
+                    artwork.style.right = 'auto';
+                    artwork.style.transform = 'none';
+                }
+            });
+        })();
     </script>
 </body>
 </html>
