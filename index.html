@@ -4,20 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Collabs — Wabi</title>
-
-    <!-- Open Graph / Social Share -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://wabicollabs.joonasvirtanen.com">
-    <meta property="og:title" content="Collabs — Wabi">
-    <meta property="og:description" content="A catalogue of artist collaborations for Wabi, featuring work from visual artists and creative coders.">
-    <meta property="og:image" content="https://wabicollabs.joonasvirtanen.com/assets/og-image.png">
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Collabs — Wabi">
-    <meta name="twitter:description" content="A catalogue of artist collaborations for Wabi, featuring work from visual artists and creative coders.">
-    <meta name="twitter:image" content="https://wabicollabs.joonasvirtanen.com/assets/og-image.png">
-
     <link rel="stylesheet" href="https://fonts.joonasvirtanen.com/selecta/selecta.css">
     <style>
         * {
@@ -63,21 +49,22 @@
             font-size: clamp(3rem, 10vw, 8rem);
             font-weight: 400;
             letter-spacing: -0.02em;
-            z-index: 5;
+            z-index: -1;
             pointer-events: none;
             user-select: none;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.5s ease, filter 0.4s ease;
         }
 
         body.showcase-active .sticky-title,
         body.detail-active .sticky-title {
-            opacity: 0;
+            opacity: 0.1;
+            filter: blur(10px);
         }
 
-        /* On scroll, fade and blur but stay visible at 20% */
+        /* Scroll-based blur for sticky title - fade out completely on scroll */
         .sticky-title.scrolled {
-            opacity: 0.2;
-            filter: blur(30px);
+            filter: blur(20px);
+            opacity: 0;
         }
 
         .canvas {
@@ -91,12 +78,11 @@
             position: absolute;
             cursor: pointer;
             transition: transform 0.3s ease, opacity 0.5s ease;
-            z-index: 10;
         }
 
         .artwork:hover {
             transform: scale(1.02);
-            z-index: 20;
+            z-index: 10;
         }
 
         .artwork-image {
@@ -117,7 +103,7 @@
         .artwork-info {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: baseline;
             padding: 16px 4px 0;
             opacity: 0;
             transform: translateY(-8px);
@@ -131,18 +117,12 @@
 
         .info-left {
             display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .info-right {
-            display: flex;
-            gap: 8px;
             align-items: center;
+            gap: 12px;
         }
 
         .artist-name {
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             font-weight: 500;
             cursor: pointer;
             transition: opacity 0.2s;
@@ -153,7 +133,7 @@
         }
 
         .artwork-title {
-            font-size: 1.2rem;
+            font-size: 1.6rem;
             color: #999;
         }
 
@@ -174,53 +154,6 @@
         .tag-ready { background: #e8e8e8; color: #555; }
         .tag-licensed { background: #e8e8e8; color: #555; }
         .tag-custom { background: #e8e8e8; color: #555; }
-
-        /* Theme tags */
-        .tag-theme {
-            background: #e8e8e8;
-            color: #555;
-            position: relative;
-        }
-
-        /* Theme editor dropdown */
-        .theme-editor {
-            position: fixed;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
-            padding: 8px 0;
-            z-index: 300;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(-5px);
-            transition: all 0.2s ease;
-        }
-
-        .theme-editor.open {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateY(0);
-        }
-
-        .theme-option {
-            display: block;
-            padding: 10px 20px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .theme-option:hover {
-            background: rgba(0, 0, 0, 0.05);
-        }
-
-        .theme-option.active {
-            font-weight: 600;
-            color: #7c5cff;
-        }
 
         /* Showcase mode */
         body.showcase-active .canvas,
@@ -264,12 +197,11 @@
             left: 0;
             top: 50%;
             transform: translateY(-50%);
-            width: 580px;
+            width: 480px;
             padding: 40px 60px 40px 100px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: flex-start;
             z-index: 3;
             transition: filter 0.3s ease, opacity 0.3s ease;
         }
@@ -316,9 +248,8 @@
 
         .artist-drive-btn {
             display: inline-block;
-            width: auto;
             margin-top: 20px;
-            padding: 12px 18px;
+            padding: 12px 20px;
             background: rgba(255, 255, 255, 0.65);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
@@ -338,26 +269,11 @@
             transform: scale(1.05);
         }
 
-        /* Detail view buttons container */
-        .detail-buttons {
+        /* Download button in detail view */
+        .detail-download-btn {
             position: fixed;
             bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 12px;
-            z-index: 70;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s ease;
-        }
-
-        body.detail-active .detail-buttons {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .detail-btn {
+            right: 40px;
             padding: 16px 28px;
             background: rgba(255, 255, 255, 0.65);
             backdrop-filter: blur(24px);
@@ -371,10 +287,18 @@
             text-align: center;
             cursor: pointer;
             box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            z-index: 70;
+            opacity: 0;
+            pointer-events: none;
             transition: all 0.3s ease;
         }
 
-        .detail-btn:hover {
+        body.detail-active .detail-download-btn {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .detail-download-btn:hover {
             background: rgba(255, 255, 255, 0.75);
             transform: scale(1.05);
         }
@@ -395,7 +319,7 @@
             display: flex;
             align-items: center;
             gap: 32px;
-            padding: 0 80px 0 680px;
+            padding: 0 80px 0 580px;
             overflow-x: auto;
             overflow-y: hidden;
             scrollbar-width: none;
@@ -426,27 +350,27 @@
         }
 
         .showcase-nav {
-            width: 60px;
-            height: 60px;
-            background: rgba(0, 0, 0, 0.9);
+            width: 52px;
+            height: 52px;
+            background: rgba(255, 255, 255, 0.65);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.4);
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            color: #fff;
+            font-size: 1.3rem;
+            color: #333;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
         }
 
         .showcase-nav:hover {
-            background: rgba(0, 0, 0, 1);
+            background: rgba(255, 255, 255, 0.75);
             transform: scale(1.08);
-            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
         }
 
         .showcase-nav:disabled {
@@ -532,19 +456,6 @@
             transform: translateY(0);
         }
 
-        .showcase-item .info-left {
-            align-items: flex-start;
-        }
-
-        .showcase-item .artwork-title {
-            text-align: left;
-        }
-
-        /* Hide artist name in showcase (artist view) since it's redundant */
-        .showcase-item .artist-name {
-            display: none;
-        }
-
         /* Detail view - single artwork */
         .detail-overlay {
             position: fixed;
@@ -605,13 +516,6 @@
             opacity: 1;
             transform: translateY(0);
             padding: 20px 8px 0;
-            justify-content: space-between;
-        }
-
-        .detail-content .info-left {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 4px;
         }
 
         .detail-content .artist-name {
@@ -621,10 +525,6 @@
 
         .detail-content .artist-name:hover {
             opacity: 0.6;
-        }
-
-        .detail-content .artwork-title {
-            font-size: 1.5rem;
         }
 
         .detail-content .artwork-title {
@@ -681,7 +581,6 @@
         .filter-menu {
             position: fixed;
             bottom: 90px;
-            left: 50%;
             background: rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
@@ -692,21 +591,15 @@
             box-shadow: 0 16px 60px rgba(0, 0, 0, 0.08);
             opacity: 0;
             pointer-events: none;
-            transform: translateX(-50%) translateY(20px) scale(0.9);
+            transform: translateY(10px) scale(0.95);
             transform-origin: bottom center;
-        }
-
-        /* Narrower width for status and theme menus */
-        #status-menu,
-        #theme-menu {
-            max-width: 240px;
-            transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .filter-menu.open {
             opacity: 1;
             pointer-events: auto;
-            transform: translateX(-50%) translateY(0) scale(1);
+            transform: translateY(0) scale(1);
         }
 
         /* Filter menus stay visible in all views */
@@ -723,14 +616,6 @@
             text-transform: uppercase;
             letter-spacing: 0.12em;
             font-weight: 500;
-        }
-
-        .filter-description {
-            font-size: 0.85rem;
-            color: #888;
-            text-align: center;
-            margin-bottom: 16px;
-            line-height: 1.4;
         }
 
         .filter-options {
@@ -765,7 +650,7 @@
         .artwork { width: clamp(320px, 32vw, 650px); }
 
         /* Pattern: left -> right -> center, with 85vh between each */
-        .artwork:nth-child(1) { left: 8%; top: 30vh; width: clamp(300px, 30vw, 600px); }
+        .artwork:nth-child(1) { left: 8%; top: 5vh; width: clamp(300px, 30vw, 600px); }
         .artwork:nth-child(2) { right: 8%; left: auto; top: 90vh; width: clamp(320px, 32vw, 625px); }
         .artwork:nth-child(3) { left: 50%; transform: translateX(-50%); top: 175vh; width: clamp(340px, 34vw, 650px); }
         .artwork:nth-child(4) { left: 6%; top: 260vh; width: clamp(300px, 30vw, 600px); }
@@ -865,21 +750,23 @@
                 padding: 12px 20px;
             }
 
-            /* Detail buttons on mobile */
-            .detail-buttons {
-                bottom: 24px;
-                gap: 8px;
-            }
-
-            .detail-btn {
+            /* Download button mobile font size */
+            .detail-download-btn {
                 font-size: 0.85rem;
                 padding: 12px 20px;
             }
 
-            /* On detail view (individual artwork), close button above the action buttons */
+            /* On detail view (individual artwork), close and download buttons side by side below artwork */
             body.detail-active .showcase-close {
-                bottom: 80px;
-                left: 50%;
+                bottom: 24px;
+                left: calc(50% - 70px);
+                transform: translateX(-50%);
+            }
+
+            body.detail-active .detail-download-btn {
+                bottom: 24px;
+                right: auto;
+                left: calc(50% + 70px);
                 transform: translateX(-50%);
             }
 
@@ -905,7 +792,6 @@
                 transform: none;
                 padding: 100px 24px 20px;
                 text-align: center;
-                align-items: center;
             }
 
             .artist-header.blurred {
@@ -992,7 +878,6 @@
     <div class="filter-buttons">
         <button class="filter-btn" data-menu="artists">Artist</button>
         <button class="filter-btn" data-menu="status">Status</button>
-        <button class="filter-btn" data-menu="theme">Theme</button>
     </div>
 
     <div class="filter-menu" id="artists-menu">
@@ -1010,7 +895,6 @@
 
     <div class="filter-menu" id="status-menu">
         <div class="filter-section">
-            <p class="filter-description">Is art WIP or ready to post</p>
             <div class="filter-options">
                 <span class="filter-option" data-status="draft">Draft</span>
                 <span class="filter-option" data-status="ready">Ready</span>
@@ -1018,16 +902,6 @@
         </div>
     </div>
 
-    <div class="filter-menu" id="theme-menu">
-        <div class="filter-section">
-            <p class="filter-description">What part of Wabi experience artwork is depicting</p>
-            <div class="filter-options">
-                <span class="filter-option" data-theme-filter="loading">Loading state</span>
-                <span class="filter-option" data-theme-filter="remix">Remixing</span>
-                <span class="filter-option" data-theme-filter="logo">Logo</span>
-            </div>
-        </div>
-    </div>
 
     <h1 class="sticky-title">Collabs</h1>
 
@@ -1050,10 +924,7 @@
         <div class="detail-content"></div>
     </div>
 
-    <div class="detail-buttons">
-        <button class="detail-btn detail-download-btn">Download</button>
-        <button class="detail-btn detail-copy-btn">Copy link</button>
-    </div>
+    <button class="detail-download-btn">Download</button>
 
     <div class="canvas">
         <!-- Pol Sola - Ready -->
@@ -1479,89 +1350,6 @@
             artworkElements.forEach(artwork => canvas.appendChild(artwork));
         })();
 
-        // Theme labels and descriptions
-        const themeLabels = {
-            'loading': 'Loading state',
-            'remix': 'Remixing',
-            'logo': 'Logo'
-        };
-
-        const themeData = {
-            'loading': { name: 'Loading state', description: 'Artworks depicting the Wabi loading experience' },
-            'remix': { name: 'Remixing', description: 'Artworks showing the remix and creation flow' },
-            'logo': { name: 'Logo', description: 'Artworks featuring the Wabi logo and branding' }
-        };
-
-        // Load saved themes from localStorage
-        const savedThemes = JSON.parse(localStorage.getItem('artworkThemes') || '{}');
-
-        // Add theme tags to all artworks
-        function getArtworkId(artwork) {
-            const video = artwork.querySelector('video');
-            const img = artwork.querySelector('img');
-            return (video?.src || img?.src || '').split('/').pop();
-        }
-
-        function restructureArtworkInfo() {
-            document.querySelectorAll('.canvas .artwork').forEach(artwork => {
-                const artworkInfo = artwork.querySelector('.artwork-info');
-                const infoLeft = artwork.querySelector('.info-left');
-                if (!artworkInfo || !infoLeft) return;
-                if (artworkInfo.querySelector('.info-right')) return; // Already restructured
-
-                // Move artwork-title into info-left (below artist name)
-                const artworkTitle = artworkInfo.querySelector('.artwork-title');
-                if (artworkTitle && !infoLeft.contains(artworkTitle)) {
-                    infoLeft.appendChild(artworkTitle);
-                }
-
-                // Create info-right for tags
-                const infoRight = document.createElement('div');
-                infoRight.className = 'info-right';
-
-                // Move existing tags to info-right
-                const existingTags = infoLeft.querySelectorAll('.tag');
-                existingTags.forEach(tag => infoRight.appendChild(tag));
-
-                // Add theme tag
-                const artworkId = getArtworkId(artwork);
-                const savedTheme = savedThemes[artworkId];
-                if (savedTheme) {
-                    artwork.dataset.theme = savedTheme;
-                }
-
-                const theme = artwork.dataset.theme;
-                if (theme && themeLabels[theme]) {
-                    const themeTag = document.createElement('span');
-                    themeTag.className = 'tag tag-theme';
-                    themeTag.textContent = themeLabels[theme];
-                    themeTag.dataset.artworkId = artworkId;
-                    infoRight.appendChild(themeTag);
-                }
-
-                artworkInfo.appendChild(infoRight);
-            });
-        }
-
-        restructureArtworkInfo();
-
-        // Handle theme tag clicks - open category page
-        document.addEventListener('click', (e) => {
-            const themeTag = e.target.closest('.tag-theme');
-            if (themeTag && !e.target.closest('.filter-menu')) {
-                e.stopPropagation();
-                e.preventDefault();
-
-                const artwork = themeTag.closest('[data-theme]');
-                const themeValue = artwork?.dataset.theme;
-                if (themeValue && themeData[themeValue]) {
-                    applyThemeFilter(themeValue, themeData[themeValue].name, themeData[themeValue].description);
-                }
-                return false;
-            }
-        }, true);
-        });
-
         const artworks = document.querySelectorAll('.canvas .artwork');
         const filterBar = document.querySelector('.filter-bar');
         const filterName = document.querySelector('.filter-name');
@@ -1577,9 +1365,7 @@
         const detailArtistInfo = document.querySelector('.detail-artist-info');
         const detailContent = document.querySelector('.detail-content');
         const detailDownloadBtn = document.querySelector('.detail-download-btn');
-        const detailCopyBtn = document.querySelector('.detail-copy-btn');
         let currentMediaUrl = null;
-        let currentArtworkId = null;
 
         // Download button click handler
         detailDownloadBtn.addEventListener('click', async () => {
@@ -1599,22 +1385,6 @@
             } catch (err) {
                 // Fallback: open in new tab
                 window.open(currentMediaUrl, '_blank');
-            }
-        });
-
-        // Copy link button click handler
-        detailCopyBtn.addEventListener('click', async () => {
-            if (!currentArtworkId) return;
-            const url = `${window.location.origin}${window.location.pathname}?artwork=${encodeURIComponent(currentArtworkId)}`;
-            try {
-                await navigator.clipboard.writeText(url);
-                detailCopyBtn.textContent = 'Copied!';
-                setTimeout(() => {
-                    detailCopyBtn.textContent = 'Copy link';
-                }, 2000);
-            } catch (err) {
-                // Fallback
-                prompt('Copy this link:', url);
             }
         });
 
@@ -1736,10 +1506,11 @@
                     btn.classList.toggle('active');
                     activeMenu = menu.classList.contains('open') ? menu : null;
 
-                    // Position menu above the button (centered on the button)
+                    // Position menu above the button
                     if (menu.classList.contains('open')) {
                         const btnRect = btn.getBoundingClientRect();
-                        menu.style.left = (btnRect.left + btnRect.width / 2) + 'px';
+                        menu.style.left = btnRect.left + (btnRect.width / 2) + 'px';
+                        menu.style.transform = 'translateX(-50%)';
                     }
                 }
             });
@@ -1778,21 +1549,6 @@
                 activeMenu = null;
                 if (status) {
                     applyTagFilter(statusValue, status.title, status.description);
-                }
-            });
-        });
-
-        // Theme filter options
-        document.querySelectorAll('.filter-option[data-theme-filter]').forEach(option => {
-            option.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const themeValue = option.dataset.themeFilter;
-                const theme = themeData[themeValue];
-                filterMenus.forEach(menu => menu.classList.remove('open'));
-                filterButtons.forEach(btn => btn.classList.remove('active'));
-                activeMenu = null;
-                if (theme) {
-                    applyThemeFilter(themeValue, theme.name, theme.description);
                 }
             });
         });
@@ -1838,11 +1594,11 @@
             }
         });
 
-        // Click tag anywhere to filter by that tag (except theme tags which have their own editor)
+        // Click tag anywhere to filter by that tag
         document.addEventListener('click', (e) => {
             const tag = e.target.closest('.tag');
-            // Ignore tags in filter menu, tag-bar, or theme tags (which have their own dropdown editor)
-            if (tag && !tag.closest('.filter-menu') && !tag.closest('.tag-bar') && !tag.classList.contains('tag-theme')) {
+            // Ignore tags in filter menu
+            if (tag && !tag.closest('.filter-menu') && !tag.closest('.tag-bar')) {
                 e.stopPropagation();
                 const tagValue = tag.textContent.toLowerCase();
                 const status = statusData[tagValue];
@@ -1915,11 +1671,10 @@
             }
             if (infoWrapper) detailContent.appendChild(infoWrapper);
 
-            // Set download button href and artwork ID for copy link
+            // Set download button href
             const mediaEl = video || clone.querySelector('img');
             if (mediaEl) {
                 currentMediaUrl = mediaEl.src;
-                currentArtworkId = getArtworkId(artwork);
             }
 
             detailContent.classList.add('visible');
@@ -1972,11 +1727,10 @@
             }
             if (infoWrapper) detailContent.appendChild(infoWrapper);
 
-            // Set download button href and artwork ID for copy link
+            // Set download button href
             const mediaEl = video || clone.querySelector('img');
             if (mediaEl) {
                 currentMediaUrl = mediaEl.src;
-                currentArtworkId = mediaEl.src.split('/').pop();
             }
 
             detailContent.classList.add('visible');
@@ -2098,7 +1852,7 @@
             showcaseScroll.scrollLeft = 0;
         }
 
-        function applyThemeFilter(themeValue, displayName, description) {
+        function applyThemeFilter(themeValue, displayName) {
             if (isDetailActive) clearDetail();
 
             isShowcaseActive = true;
@@ -2107,9 +1861,8 @@
             document.body.classList.remove('filtered', 'detail-active');
             filterName.textContent = displayName;
 
-            // Header for theme filter with description
-            const desc = description || 'Theme filter';
-            artistHeader.innerHTML = `<h2>${displayName}</h2><p class="artist-description">${desc}</p>`;
+            // Simple header for theme filter
+            artistHeader.innerHTML = `<h2>${displayName}</h2><p class="artist-description">Theme filter</p>`;
 
             showcaseScroll.innerHTML = '';
 
@@ -2267,7 +2020,7 @@
         showcaseScroll.addEventListener('wheel', (e) => {
             if (isShowcaseActive) {
                 e.preventDefault();
-                showcaseScroll.scrollBy({ left: e.deltaY * 2, behavior: 'smooth' });
+                showcaseScroll.scrollLeft += e.deltaY;
             }
         }, { passive: false });
 
@@ -2287,38 +2040,15 @@
 
         artworks.forEach(artwork => observer.observe(artwork));
 
-        // Scroll-based blur for sticky title - progressive blur
+        // Scroll-based blur for sticky title
         const stickyTitle = document.querySelector('.sticky-title');
         window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            const maxScroll = 600; // Full blur at 600px scroll
-            const progress = Math.min(scrollY / maxScroll, 1);
-
-            // Interpolate opacity from 1 to 0.2
-            const opacity = 1 - (progress * 0.8);
-            // Interpolate blur from 0 to 30px
-            const blur = progress * 30;
-
-            stickyTitle.style.opacity = opacity;
-            stickyTitle.style.filter = `blur(${blur}px)`;
-        });
-
-        // Open artwork from URL parameter
-        (function() {
-            const params = new URLSearchParams(window.location.search);
-            const artworkParam = params.get('artwork');
-            if (artworkParam) {
-                // Find artwork by filename
-                const artwork = Array.from(artworks).find(a => {
-                    const id = getArtworkId(a);
-                    return id === artworkParam || decodeURIComponent(id) === decodeURIComponent(artworkParam);
-                });
-                if (artwork) {
-                    setTimeout(() => openDetail(artwork), 500);
-                }
+            if (window.scrollY > 100) {
+                stickyTitle.classList.add('scrolled');
+            } else {
+                stickyTitle.classList.remove('scrolled');
             }
-        })();
-
+        });
     </script>
 </body>
 </html>
