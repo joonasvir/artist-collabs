@@ -155,6 +155,52 @@
         .tag-licensed { background: #e8e8e8; color: #555; }
         .tag-custom { background: #e8e8e8; color: #555; }
 
+        /* Metaphor tags */
+        .tag-metaphor {
+            background: #e8e8e8;
+            color: #555;
+            position: relative;
+        }
+
+        /* Metaphor editor dropdown */
+        .metaphor-editor {
+            position: fixed;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 8px 0;
+            z-index: 300;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(-5px);
+            transition: all 0.2s ease;
+        }
+
+        .metaphor-editor.open {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .metaphor-option {
+            display: block;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+            font-size: 0.95rem;
+        }
+
+        .metaphor-option:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .metaphor-option.active {
+            font-weight: 600;
+        }
+
         /* Showcase mode */
         body.showcase-active .canvas,
         body.detail-active .canvas {
@@ -879,6 +925,7 @@
     <div class="filter-buttons">
         <button class="filter-btn" data-menu="artists">Artist</button>
         <button class="filter-btn" data-menu="status">Status</button>
+        <button class="filter-btn" data-menu="metaphor">Metaphor</button>
     </div>
 
     <div class="filter-menu" id="artists-menu">
@@ -904,6 +951,22 @@
         </div>
     </div>
 
+    <div class="filter-menu" id="metaphor-menu">
+        <div class="filter-section">
+            <div class="filter-options">
+                <span class="filter-option" data-metaphor="loading">Loading</span>
+                <span class="filter-option" data-metaphor="remix">Remix</span>
+                <span class="filter-option" data-metaphor="logo">Logo</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Metaphor editor dropdown -->
+    <div class="metaphor-editor" id="metaphor-editor">
+        <span class="metaphor-option" data-metaphor-value="loading">Loading</span>
+        <span class="metaphor-option" data-metaphor-value="remix">Remix</span>
+        <span class="metaphor-option" data-metaphor-value="logo">Logo</span>
+    </div>
 
     <h1 class="sticky-title">Collabs</h1>
 
@@ -1383,6 +1446,54 @@
         const detailDownloadBtn = document.querySelector('.detail-download-btn');
         let currentMediaUrl = null;
 
+        // Metaphor labels
+        const metaphorLabels = {
+            'loading': 'Loading',
+            'remix': 'Remix',
+            'logo': 'Logo'
+        };
+
+        // Load saved metaphors from localStorage
+        const savedMetaphors = JSON.parse(localStorage.getItem('artworkMetaphors') || '{}');
+
+        // Helper to get artwork ID from video/image src
+        function getArtworkId(artwork) {
+            const video = artwork.querySelector('video');
+            const img = artwork.querySelector('img');
+            return (video?.src || img?.src || '').split('/').pop();
+        }
+
+        // Add metaphor tags to all artworks
+        function addMetaphorTags() {
+            document.querySelectorAll('.canvas .artwork').forEach(artwork => {
+                const infoLeft = artwork.querySelector('.info-left');
+                if (!infoLeft) return;
+
+                // Check if metaphor tag already exists
+                if (artwork.querySelector('.tag-metaphor')) return;
+
+                const artworkId = getArtworkId(artwork);
+
+                // Apply saved metaphor if exists
+                const savedMetaphor = savedMetaphors[artworkId];
+                if (savedMetaphor) {
+                    artwork.dataset.theme = savedMetaphor;
+                }
+
+                const theme = artwork.dataset.theme;
+                if (theme && metaphorLabels[theme]) {
+                    const metaphorTag = document.createElement('span');
+                    metaphorTag.className = 'tag tag-metaphor';
+                    metaphorTag.textContent = metaphorLabels[theme];
+                    metaphorTag.dataset.artworkId = artworkId;
+                    infoLeft.appendChild(metaphorTag);
+                }
+            });
+        }
+
+        // Run after DOM is ready
+        addMetaphorTags();
+
         // Download button click handler
         detailDownloadBtn.addEventListener('click', async () => {
             if (!currentMediaUrl) return;
@@ -1567,6 +1678,81 @@
                     applyTagFilter(statusValue, status.title, status.description);
                 }
             });
+        });
+
+        // Metaphor filter options
+        document.querySelectorAll('.filter-option[data-metaphor]').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const metaphorValue = option.dataset.metaphor;
+                const metaphorName = metaphorLabels[metaphorValue] || metaphorValue;
+                filterMenus.forEach(menu => menu.classList.remove('open'));
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                activeMenu = null;
+                applyMetaphorFilter(metaphorValue, metaphorName);
+            });
+        });
+
+        // Metaphor editor
+        const metaphorEditor = document.getElementById('metaphor-editor');
+        let currentEditingMetaphorTag = null;
+        let currentEditingMetaphorArtwork = null;
+
+        // Handle metaphor tag clicks - show dropdown editor
+        document.addEventListener('click', (e) => {
+            const metaphorTag = e.target.closest('.tag-metaphor');
+            if (metaphorTag && !e.target.closest('.filter-menu')) {
+                e.stopPropagation();
+                e.preventDefault();
+
+                currentEditingMetaphorTag = metaphorTag;
+                currentEditingMetaphorArtwork = metaphorTag.closest('[data-theme]');
+
+                // Position the editor
+                const rect = metaphorTag.getBoundingClientRect();
+                metaphorEditor.style.left = rect.left + 'px';
+                metaphorEditor.style.top = (rect.bottom + 8) + 'px';
+
+                // Mark current metaphor as active
+                const currentMetaphor = currentEditingMetaphorArtwork?.dataset.theme;
+                metaphorEditor.querySelectorAll('.metaphor-option').forEach(opt => {
+                    opt.classList.toggle('active', opt.dataset.metaphorValue === currentMetaphor);
+                });
+
+                metaphorEditor.classList.add('open');
+                return false;
+            }
+        }, true);
+
+        // Handle metaphor option selection
+        metaphorEditor.querySelectorAll('.metaphor-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const newMetaphor = option.dataset.metaphorValue;
+
+                if (currentEditingMetaphorArtwork && currentEditingMetaphorTag) {
+                    // Update data attribute
+                    currentEditingMetaphorArtwork.dataset.theme = newMetaphor;
+                    // Update tag text
+                    currentEditingMetaphorTag.textContent = metaphorLabels[newMetaphor];
+
+                    // Save to localStorage
+                    const artworkId = currentEditingMetaphorTag.dataset.artworkId;
+                    savedMetaphors[artworkId] = newMetaphor;
+                    localStorage.setItem('artworkMetaphors', JSON.stringify(savedMetaphors));
+                }
+
+                metaphorEditor.classList.remove('open');
+                currentEditingMetaphorTag = null;
+                currentEditingMetaphorArtwork = null;
+            });
+        });
+
+        // Close metaphor editor on outside click
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.metaphor-editor') && !e.target.closest('.tag-metaphor')) {
+                metaphorEditor.classList.remove('open');
+            }
         });
 
         // Click artwork image to open detail view (from canvas or showcase)
@@ -1879,12 +2065,25 @@
 
             // Simple header for theme filter
             artistHeader.innerHTML = `<h2>${displayName}</h2><p class="artist-description">Theme filter</p>`;
+        }
+
+        function applyMetaphorFilter(metaphorValue, displayName) {
+            if (isDetailActive) clearDetail();
+
+            isShowcaseActive = true;
+            currentFilter = { type: 'metaphor', value: metaphorValue };
+            document.body.classList.add('showcase-active');
+            document.body.classList.remove('filtered', 'detail-active');
+            filterName.textContent = displayName;
+
+            // Header for metaphor filter
+            artistHeader.innerHTML = `<h2>${displayName}</h2><p class="artist-description">Metaphor filter</p>`;
 
             showcaseScroll.innerHTML = '';
 
             const matchingArtworks = [];
             artworks.forEach(artwork => {
-                if (artwork.dataset.theme === themeValue) {
+                if (artwork.dataset.theme === metaphorValue) {
                     matchingArtworks.push(artwork);
                 }
             });
